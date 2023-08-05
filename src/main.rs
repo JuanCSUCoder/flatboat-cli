@@ -14,6 +14,7 @@ fn main() {
             },
             args::WorkspaceSubcommands::List => {
                 println!("Available Workspaces ------------------");
+                todo!();
             },
             args::WorkspaceSubcommands::Delete { ws_name } => {
                 println!("Deleting Workspace {}", ws_name);
