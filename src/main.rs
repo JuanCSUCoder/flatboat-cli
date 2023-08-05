@@ -4,7 +4,6 @@ use clap::{Parser, Subcommand, Args};
 enum WorkspaceSubcommands {
     /// Creates a new workspace in the specified location
     Create {
-        #[arg(short, long)]
         ws_name: String,
     },
 
@@ -13,7 +12,6 @@ enum WorkspaceSubcommands {
 
     /// Deletes an existing workspace
     Delete {
-        #[arg(short, long)]
         ws_name: String
     },
 }
