@@ -2,6 +2,7 @@ mod args;
 
 use args::Cli;
 use clap::Parser;
+use subprocess::Exec;
 
 fn main() {
     let cli = Cli::parse();
@@ -10,6 +11,7 @@ fn main() {
         args::Commands::Workspace(ws_args) => match ws_args.subcommand {
             args::WorkspaceSubcommands::Create { ws_name } => {
                 println!("Creating Workspace {} ...", ws_name);
+                Exec::cmd("docker").arg("info").join().unwrap();
                 todo!()
             },
             args::WorkspaceSubcommands::List => {
