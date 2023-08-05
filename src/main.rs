@@ -3,13 +3,19 @@ use clap::{Parser, Subcommand, Args};
 #[derive(Subcommand)]
 enum WorkspaceSubcommands {
     /// Creates a new workspace in the specified location
-    Create,
+    Create {
+        #[arg(short, long)]
+        ws_name: String,
+    },
 
     /// Lists existing workspaces
     List,
 
     /// Deletes an existing workspace
-    Delete
+    Delete {
+        #[arg(short, long)]
+        ws_name: String
+    },
 }
 
 /// Workspace Subcommands
