@@ -4,6 +4,22 @@ use args::Cli;
 use clap::Parser;
 
 fn main() {
-    let _cli = Cli::parse();
-    println!("Hello, world!");
+    let cli = Cli::parse();
+    
+    match cli.command {
+        args::Commands::Workspace(ws_args) => match ws_args.subcommand {
+            args::WorkspaceSubcommands::Create { ws_name } => {
+                println!("Creating Workspace {}", ws_name);
+                todo!()
+            },
+            args::WorkspaceSubcommands::List => {
+                println!("Available Workspaces ------------------");
+            },
+            args::WorkspaceSubcommands::Delete { ws_name } => {
+                println!("Deleting Workspace {}", ws_name);
+                todo!();
+            },
+        },
+        args::Commands::Info => println!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
+    }
 }

@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand, Args};
 
 #[derive(Subcommand)]
-enum WorkspaceSubcommands {
+pub enum WorkspaceSubcommands {
     /// Creates a new workspace in the specified location
     Create {
         ws_name: String,
@@ -18,15 +18,15 @@ enum WorkspaceSubcommands {
 
 /// Workspace Subcommands
 #[derive(Args)]
-struct WorkspaceArgs {
+pub struct WorkspaceArgs {
     /// Workspace Sub-commands
     #[command(subcommand)]
-    subcommand: WorkspaceSubcommands,
+    pub subcommand: WorkspaceSubcommands,
 }
 
 /// Commands
 #[derive(Subcommand)]
-enum Commands {
+pub enum Commands {
     /// Commands to create and manipulate a Dockerized ROS2 Workspace
     Workspace(WorkspaceArgs),
 
@@ -40,5 +40,5 @@ enum Commands {
 pub struct Cli {
     /// Subcommand Category
     #[command(subcommand)]
-    command: Commands,
+    pub command: Commands,
 }
