@@ -19,7 +19,6 @@ enum WorkspaceSubcommands {
 /// Workspace Subcommands
 #[derive(Args)]
 struct WorkspaceArgs {
-
     /// Workspace Sub-commands
     #[command(subcommand)]
     subcommand: WorkspaceSubcommands,
@@ -39,7 +38,6 @@ enum Commands {
 #[derive(Parser)]
 #[command(author, version, about, long_about=None)]
 struct Cli {
-
     /// Subcommand Category
     #[command(subcommand)]
     command: Commands,
