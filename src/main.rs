@@ -7,11 +7,21 @@ use std::{fs, process, path::Path, env};
 
 use args::Cli;
 use clap::Parser;
+use directories::ProjectDirs;
 use subprocess::Exec;
 
 fn main() {
     pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Info).init();
     let cli = Cli::parse();
+
+    let project_dirs = ProjectDirs::from("codes", "juancsu", "flatboat");
+
+    if project_dirs.is_none() {
+        error!("Unable to locate application folders");
+        process::exit(1);
+    } else {
+        debug!("Located folders {:?}", &project_dirs.unwrap());
+    }
     
     match cli.command {
         args::Commands::Workspace(ws_args) => match ws_args.subcommand {
