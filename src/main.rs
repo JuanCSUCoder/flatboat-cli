@@ -19,7 +19,7 @@ fn main() {
                 info!("Creating Workspace {} ...", &ws_name);
                 let path = Path::new(&ws_name);
                 match fs::create_dir(&path) {
-                    Ok(_) => info!("Folder {} created at {:?}", &ws_name, path.canonicalize()),
+                    Ok(_) => info!("Folder {} created at {:?}", &ws_name, path.canonicalize().unwrap()),
                     Err(e) => {
                         error!("Unable to create workspace folder {} at {:?}: {}", &ws_name, path.canonicalize(), e);
                         process::exit(1);
