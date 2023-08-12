@@ -10,7 +10,7 @@ use clap::Parser;
 use subprocess::Exec;
 
 fn main() {
-    pretty_env_logger::init();
+    pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Info).init();
     let cli = Cli::parse();
     
     match cli.command {
@@ -27,7 +27,6 @@ fn main() {
                 };
                 // Exec::cmd("docker").arg("info").join().unwrap();
                 error!("Not Implemented");
-                todo!()
             },
             args::WorkspaceSubcommands::List => {
                 info!("Available Workspaces");
