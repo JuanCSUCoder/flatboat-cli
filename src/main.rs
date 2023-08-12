@@ -11,7 +11,7 @@ use directories::ProjectDirs;
 use subprocess::Exec;
 
 fn main() {
-    pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Info).init();
+    pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Debug).init();
     let cli = Cli::parse();
 
     let project_dirs = ProjectDirs::from("codes", "juancsu", "flatboat");
@@ -20,8 +20,13 @@ fn main() {
         error!("Unable to locate application folders");
         process::exit(1);
     } else {
-        debug!("Located folders {:?}", &project_dirs.unwrap());
+        debug!("Located folders {:?}", &project_dirs);
     }
+
+    let project_dirs = project_dirs.unwrap();
+    let data_dir = project_dirs.data_dir();
+
+    debug!("Data Directory: {:?}", data_dir);
     
     match cli.command {
         args::Commands::Workspace(ws_args) => match ws_args.subcommand {
