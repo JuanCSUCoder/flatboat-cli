@@ -31,6 +31,8 @@ fn main() {
                     Err(_) => error!("Unable to access created folder {}", &ws_name),
                 };
                 Exec::cmd("devcontainer").args(&["templates", "apply", "-t", "ghcr.io/JuanCSUCoder/RobotEn/humble_nogpu"]).join().unwrap();
+
+                info!("Workspace Created Successfully!");
             },
             args::WorkspaceSubcommands::List => {
                 info!("Available Workspaces");
