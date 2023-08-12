@@ -3,7 +3,7 @@ mod args;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{fs, process, path::Path};
+use std::{fs, process, path::Path, env};
 
 use args::Cli;
 use clap::Parser;
@@ -25,8 +25,12 @@ fn main() {
                         process::exit(1);
                     },
                 };
-                // Exec::cmd("docker").arg("info").join().unwrap();
-                error!("Not Implemented");
+
+                match env::set_current_dir(path) {
+                    Ok(_) => info!("Entering Workspace ..."),
+                    Err(_) => error!("Unable to access created folder {}", &ws_name),
+                };
+                Exec::cmd("devcontainer").args(&["templates", "apply", "-t", "ghcr.io/JuanCSUCoder/RobotEn/humble_nogpu"]).join().unwrap();
             },
             args::WorkspaceSubcommands::List => {
                 info!("Available Workspaces");
