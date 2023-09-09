@@ -15,7 +15,7 @@ fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Comman
 }
 
 fn main() {
-    pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Debug).init();
+    pretty_env_logger::init();
     let cli = Cli::parse();
 
     let project_dirs = ProjectDirs::from("codes", "juancsu", "flatboat");
