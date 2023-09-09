@@ -10,15 +10,25 @@ pub enum WorkspaceSubcommands {
 
 #[derive(Subcommand)]
 pub enum BotSubcommands {
+    /// Creates a dockerized K8s Node for ROS2 Robots
     Create,
+
+    /// Launch the dockerized K8s Node in the Kubernetes Cluster
     BringUp,
+
+    /// Removes the dockerized K8s Node from the Kubernetes Cluster
     BringDown,
+
+    /// Re-launch the dockerized K8s Node in the Kubernetes Cluster
     Refresh,
 }
 
 #[derive(Subcommand)]
 pub enum WorkloadSubcommands {
+    /// Create a K8s Job Workload for a ROS2 Robot
     Create,
+
+    /// Launch a K8s Job Workload in the Current Kubernetes Cluster for a ROS2 Robot
     Deploy,
 }
 
