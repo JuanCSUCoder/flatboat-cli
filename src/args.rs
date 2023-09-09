@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand, Args};
 pub enum WorkspaceSubcommands {
     /// Creates a new workspace in the specified location
     Create {
+        /// Name of the workspace to be created
         ws_name: String,
     }
 }
@@ -11,25 +12,43 @@ pub enum WorkspaceSubcommands {
 #[derive(Subcommand)]
 pub enum BotSubcommands {
     /// Creates a dockerized K8s Node for ROS2 Robots
-    Create,
+    Create {
+        /// Name of the bot to be created
+        bot_name: String
+    },
 
     /// Launch the dockerized K8s Node in the Kubernetes Cluster
-    BringUp,
+    BringUp {
+        /// Name of the bot to be started
+        bot_name: String
+    },
 
     /// Removes the dockerized K8s Node from the Kubernetes Cluster
-    BringDown,
+    BringDown {
+        /// Name of the bot to be stopped
+        bot_name: String
+    },
 
     /// Re-launch the dockerized K8s Node in the Kubernetes Cluster
-    Refresh,
+    Refresh {
+        /// Name of the bot to be re-launched
+        bot_name: String
+    },
 }
 
 #[derive(Subcommand)]
 pub enum WorkloadSubcommands {
     /// Create a K8s Job Workload for a ROS2 Robot
-    Create,
+    Create {
+        /// Name of the workload to be created
+        wl_name: String
+    },
 
     /// Launch a K8s Job Workload in the Current Kubernetes Cluster for a ROS2 Robot
-    Deploy,
+    Deploy {
+        /// Name of the workload to be deployed
+        wl_name: String
+    },
 }
 
 /// Workspace Subcommands
