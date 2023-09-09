@@ -48,16 +48,10 @@ fn main() {
                 Exec::cmd("devcontainer").args(&["templates", "apply", "-t", "ghcr.io/JuanCSUCoder/RobotEn/humble_nogpu"]).join().unwrap();
 
                 info!("Workspace Created Successfully!");
-            },
-            args::WorkspaceSubcommands::List => {
-                info!("Available Workspaces");
-                todo!();
-            },
-            args::WorkspaceSubcommands::Delete { ws_name } => {
-                info!("Deleting Workspace {} ...", ws_name);
-                todo!();
-            },
+            }
         },
         args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
+        args::Commands::Bot(_) => todo!(),
+        args::Commands::Workload(_) => todo!(),
     }
 }

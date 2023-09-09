@@ -5,15 +5,21 @@ pub enum WorkspaceSubcommands {
     /// Creates a new workspace in the specified location
     Create {
         ws_name: String,
-    },
+    }
+}
 
-    /// Lists existing workspaces
-    List,
+#[derive(Subcommand)]
+pub enum BotSubcommands {
+    Create,
+    BringUp,
+    BringDown,
+    Refresh,
+}
 
-    /// Deletes an existing workspace
-    Delete {
-        ws_name: String
-    },
+#[derive(Subcommand)]
+pub enum WorkloadSubcommands {
+    Create,
+    Deploy,
 }
 
 /// Workspace Subcommands
@@ -24,11 +30,34 @@ pub struct WorkspaceArgs {
     pub subcommand: WorkspaceSubcommands,
 }
 
+/// Bot Subcommands
+#[derive(Args)]
+pub struct BotArgs {
+    /// Bot Sub-commands
+    #[command(subcommand)]
+    pub subcommand: BotSubcommands,
+}
+
+/// Workload Subcommands
+#[derive(Args)]
+pub struct WorkloadArgs {
+    /// Workload Sub-commands
+    #[command(subcommand)]
+    subcommand: WorkloadSubcommands,
+}
+
 /// Commands
 #[derive(Subcommand)]
 pub enum Commands {
     /// Commands to create and manipulate a Dockerized ROS2 Workspace
     Workspace(WorkspaceArgs),
+
+    /// Commands to create and manipulate a Dockerized Robotic Kubernetes Node
+    Bot(BotArgs),
+
+
+    /// Commands to create and manipulate K8s Job Workloads
+    Workload(WorkloadArgs),
 
     /// Information about the command-line application
     Info
