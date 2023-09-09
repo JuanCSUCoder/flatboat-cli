@@ -75,6 +75,13 @@ pub struct WorkloadArgs {
     subcommand: WorkloadSubcommands,
 }
 
+/// Shell Completition Generation Subcommand
+#[derive(Args)]
+pub struct GeneratorArgs {
+    // If provided, outputs the completion file for given shell
+    pub generator: clap_complete::Shell,
+}
+
 /// Commands
 #[derive(Subcommand)]
 pub enum Commands {
@@ -87,6 +94,9 @@ pub enum Commands {
 
     /// Commands to create and manipulate K8s Job Workloads
     Workload(WorkloadArgs),
+
+    /// Generate Shell Completitions
+    Generator(GeneratorArgs),
 
     /// Information about the command-line application
     Info
