@@ -4,12 +4,11 @@ mod features;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{fs, process, path::Path, env};
+use std::process;
 
 use args::Cli;
 use clap::Parser;
 use directories::ProjectDirs;
-use subprocess::Exec;
 
 fn main() {
     pretty_env_logger::formatted_builder().filter_level(log::LevelFilter::Debug).init();
@@ -30,27 +29,7 @@ fn main() {
     debug!("Data Directory: {:?}", data_dir);
     
     match cli.command {
-        args::Commands::Workspace(ws_args) => match ws_args.subcommand {
-            args::WorkspaceSubcommands::Create { ws_name } => {
-                info!("Creating Workspace {} ...", &ws_name);
-                let path = Path::new(&ws_name);
-                match fs::create_dir(&path) {
-                    Ok(_) => info!("Folder {} created at {:?}", &ws_name, path.canonicalize().unwrap()),
-                    Err(e) => {
-                        error!("Unable to create workspace folder {} at {:?}: {}", &ws_name, path.canonicalize(), e);
-                        process::exit(1);
-                    },
-                };
-
-                match env::set_current_dir(path) {
-                    Ok(_) => info!("Entering Workspace ..."),
-                    Err(_) => error!("Unable to access created folder {}", &ws_name),
-                };
-                Exec::cmd("devcontainer").args(&["templates", "apply", "-t", "ghcr.io/JuanCSUCoder/RobotEn/humble_nogpu"]).join().unwrap();
-
-                info!("Workspace Created Successfully!");
-            }
-        },
+        args::Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand),
         args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
         args::Commands::Bot(_) => todo!(),
         args::Commands::Workload(_) => todo!(),
