@@ -51,6 +51,21 @@ pub enum WorkloadSubcommands {
     },
 }
 
+#[derive(Subcommand)]
+pub enum PackageSubcommands {
+    /// Creates a new ROS2 Package
+    Create {
+        /// Name of the package to be created
+        pkg_name: String
+    },
+
+    /// Builds an existing ROS2 Package
+    Build {
+        /// Name of the package to be built
+        pkg_name: String
+    }
+}
+
 /// Workspace Subcommands
 #[derive(Args)]
 pub struct WorkspaceArgs {
@@ -75,6 +90,13 @@ pub struct WorkloadArgs {
     subcommand: WorkloadSubcommands,
 }
 
+/// Package Subcommands
+#[derive(Args)]
+pub struct PackageArgs {
+    #[command(subcommand)]
+    subcommand: PackageSubcommands,
+}
+
 /// Shell Completition Generation Subcommand
 #[derive(Args)]
 pub struct GeneratorArgs {
@@ -94,6 +116,9 @@ pub enum Commands {
 
     /// Commands to create and manipulate K8s Job Workloads
     Workload(WorkloadArgs),
+
+    /// Commands to create and build ROS2 packages
+    Package(PackageArgs),
 
     /// Generate Shell Completitions
     Generator(GeneratorArgs),
