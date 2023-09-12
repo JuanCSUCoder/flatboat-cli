@@ -1,4 +1,4 @@
-use std::{env, fs, path::{Path, PathBuf}, process};
+use std::{env, fs, path::PathBuf, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
@@ -7,7 +7,7 @@ use crate::args;
 /// Creates Workspace Directory
 fn create_ws_dir(ws_name: &String) -> PathBuf {
     info!("Creating Workspace {} ...", &ws_name);
-    let path = Path::new(&ws_name);
+    let path = PathBuf::from(ws_name);
     match fs::create_dir(&path) {
         Ok(_) => info!(
             "Folder {} created at {:?}",
@@ -25,7 +25,7 @@ fn create_ws_dir(ws_name: &String) -> PathBuf {
         }
     };
 
-    return path.to_path_buf()
+    return path
 }
 
 /// Downloads the files from the Workspace Template
