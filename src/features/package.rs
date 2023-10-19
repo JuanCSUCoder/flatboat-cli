@@ -12,6 +12,9 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands, path: &Path) {
 
 /// Create a ROS Package Initialized with a Dockerfile for Building
 fn create_pkg(pkg_name: &String, path: &Path) {
+    // Start or check if workspace is started
+    
+
     // Find Devcontainer Docker ID
 
     // Exec Creation Command inside Devcontainer
@@ -21,6 +24,8 @@ fn create_pkg(pkg_name: &String, path: &Path) {
 
 /// Builds a Docker Image for a ROS Package
 fn build_pkg(pkg_name: &String, path: &Path) {
+    // Start or check if workspace is started
+
     // Find Devcontainer Docker ID
 
     // Build Docker Image for the Package with Tag
