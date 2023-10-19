@@ -43,6 +43,6 @@ fn main() {
             let mut cmd = Cli::command_for_update();
             print_completions(gen_args.generator, &mut cmd);
         },
-        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand, data_dir),
+        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
     }
 }
