@@ -87,14 +87,14 @@ pub struct BotArgs {
 pub struct WorkloadArgs {
     /// Workload Sub-commands
     #[command(subcommand)]
-    subcommand: WorkloadSubcommands,
+    pub subcommand: WorkloadSubcommands,
 }
 
 /// Package Subcommands
 #[derive(Args)]
 pub struct PackageArgs {
     #[command(subcommand)]
-    subcommand: PackageSubcommands,
+    pub subcommand: PackageSubcommands,
 }
 
 /// Shell Completition Generation Subcommand
