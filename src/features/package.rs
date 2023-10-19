@@ -1,5 +1,7 @@
 use std::path::Path;
 
+use subprocess::Exec;
+
 use crate::args::PackageSubcommands;
 
 /// Handles all commands related with packages
@@ -13,7 +15,19 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands, path: &Path) {
 /// Create a ROS Package Initialized with a Dockerfile for Building
 fn create_pkg(pkg_name: &String, path: &Path) {
     // Start or check if workspace is started
+    let res = Exec::cmd("devcontainer")
+        .args(&["up", "--workspace-folder", "."])
+        .capture()
+        .expect("Error Launching Devcontainer");
+
+    let lines = res.stdout
+        .split(|&raw| raw == b'\n')
+        .map(|line| 
+            line.strip_suffix(b"\r")
+                .unwrap_or(line)
+        );
     
+    // Parse Command Output
 
     // Find Devcontainer Docker ID
 
