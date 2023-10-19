@@ -17,23 +17,23 @@ fn create_pkg(pkg_name: &String, path: &Path) {
     // Start or check if workspace is started
     let res = Exec::cmd("devcontainer")
         .args(&["up", "--workspace-folder", "."])
-        .capture()
+        .join()
         .expect("Error Launching Devcontainer");
 
-    let lines = res.stdout
-        .split(|&raw| raw == b'\n')
-        .map(|line| 
-            line.strip_suffix(b"\r")
-                .unwrap_or(line)
-        );
-    
-    // Parse Command Output
+    if res.success() {
+        // Exec Creation Command inside Devcontainer
+        let cmd = String::from("\"cd src && ros2 pkg create --build-type ament_python \"") + pkg_name;
+        let res = Exec::cmd("devcontainer")
+            .args(&[
+                "exec", "--workspace-folder", ".", "bash", "-c", cmd.as_str()
+                ])
+            .join()
+            .expect("Error executing command inside the container");
 
-    // Find Devcontainer Docker ID
-
-    // Exec Creation Command inside Devcontainer
-
-    // Adds Docker File Configuration
+        if res.success() {
+            // Adds Docker File Configuration
+        }
+    }
 }
 
 /// Builds a Docker Image for a ROS Package
