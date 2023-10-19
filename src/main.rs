@@ -1,5 +1,7 @@
 mod args;
 mod features;
+mod controllers;
+mod model;
 
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
