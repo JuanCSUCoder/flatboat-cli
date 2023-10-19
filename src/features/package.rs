@@ -20,7 +20,7 @@ fn create_pkg(pkg_name: &String) {
 
     if res.success() {
         // Exec Creation Command inside Devcontainer
-        let cmd = String::from("\"cd src && ros2 pkg create --build-type ament_python \"") + pkg_name;
+        let cmd = String::from("cd src && ros2 pkg create --build-type ament_python ") + pkg_name;
         let res = Exec::cmd("devcontainer")
             .args(&[
                 "exec", "--workspace-folder", ".", "bash", "-c", cmd.as_str()
