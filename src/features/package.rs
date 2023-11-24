@@ -35,10 +35,12 @@ fn create_pkg(pkg_name: &String) {
 }
 
 /// Builds a Docker Image for a ROS Package
-fn build_pkg(pkg_name: &String) {
-    // Start or check if workspace is started
+fn build_pkg(_pkg_name: &String) {
+    todo!()
 
-    // Find Devcontainer Docker ID
+    // TODO: Start or check if workspace is started
 
-    // Build Docker Image for the Package with Tag
+    // TODO: Find Devcontainer Docker ID
+
+    // TODO: Build Docker Image for the Package with Tag
 }
