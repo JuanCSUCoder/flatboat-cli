@@ -97,6 +97,20 @@ pub struct PackageArgs {
     pub subcommand: PackageSubcommands,
 }
 
+/// ROS2 Command Arguments
+#[derive(Args)]
+pub struct Ros2Args {
+    /// ROS2 Command Arguments
+    pub ros2_args: String,
+}
+
+/// Exec Command Arguments
+#[derive(Args)]
+pub struct ExecArgs {
+    /// Command to Run Inside Devcontainer
+    pub exec_cmd: String,
+}
+
 /// Shell Completition Generation Subcommand
 #[derive(Args)]
 pub struct GeneratorArgs {
@@ -119,6 +133,12 @@ pub enum Commands {
 
     /// Commands to create and build ROS2 packages
     Package(PackageArgs),
+
+    /// Runs a ROS2 Command Inside the Devcontainer
+    Ros2(Ros2Args),
+
+    /// Runs a Linux Command Inside the ROS2 Workspace Devcontainer
+    Exec(ExecArgs),
 
     /// Generate Shell Completitions
     Generator(GeneratorArgs),
