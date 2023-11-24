@@ -43,8 +43,8 @@ fn main() {
 
         args::Commands::Bot(_) => todo!(),
         args::Commands::Workload(_) => todo!(),
-        args::Commands::Ros2(_) => todo!(),
-        args::Commands::Exec(_) => todo!(),
+        args::Commands::Ros2(ros2_args) => features::cmds::handle_ros2_cmd(ros2_args),
+        args::Commands::Exec(exec_args) => features::cmds::handle_exec_cmd(exec_args),
 
 
         args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
