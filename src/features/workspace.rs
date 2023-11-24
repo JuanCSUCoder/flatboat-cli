@@ -35,7 +35,7 @@ fn create_ws_files() -> Result<ExitStatus, PopenError>{
             "templates",
             "apply",
             "-t",
-            "ghcr.io/JuanCSUCoder/RobotEn/humble_nogpu",
+            "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu",
         ])
         .join()
 }
