@@ -40,17 +40,18 @@ fn main() {
 
     match cli.command {
         args::Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand),
-        args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
+        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
+
         args::Commands::Bot(_) => todo!(),
         args::Commands::Workload(_) => todo!(),
         args::Commands::Ros2(_) => todo!(),
         args::Commands::Exec(_) => todo!(),
 
 
+        args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
         args::Commands::Generator(gen_args) => {
             let mut cmd = Cli::command_for_update();
             print_completions(gen_args.generator, &mut cmd);
         },
-        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
     }
 }
