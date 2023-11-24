@@ -12,15 +12,18 @@ use args::Cli;
 use clap::{Parser, CommandFactory};
 use directories::ProjectDirs;
 
+use pretty_env_logger::env_logger::Env;
+
 fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
     clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
 }
 
 fn main() {
-    pretty_env_logger::env_logger::Builder::from_env(
-        pretty_env_logger::env_logger::Env::default()
-            .default_filter_or("info")
-    ).init();
+    if std::env::var("RUST_LOG").is_err() {
+        std::env::set_var("RUST_LOG", "info");
+    }
+
+    pretty_env_logger::init();
     let cli = Cli::parse();
 
     let project_dirs = ProjectDirs::from("codes", "juancsu", "flatboat");
