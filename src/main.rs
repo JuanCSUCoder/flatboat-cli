@@ -12,8 +12,6 @@ use args::Cli;
 use clap::{Parser, CommandFactory};
 use directories::ProjectDirs;
 
-use pretty_env_logger::env_logger::Env;
-
 fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
     clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
 }
