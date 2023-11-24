@@ -1,6 +1,6 @@
 use subprocess::Exec;
 
-use crate::args::PackageSubcommands;
+use crate::{args::PackageSubcommands, toolkits::devcontainer};
 
 /// Handles all commands related with packages
 pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) {
@@ -21,11 +21,7 @@ fn create_pkg(pkg_name: &String) {
     if res.success() {
         // Exec Creation Command inside Devcontainer
         let cmd = String::from("cd src && ros2 pkg create --build-type ament_python ") + pkg_name;
-        let res = Exec::cmd("devcontainer")
-            .args(&[
-                "exec", "--workspace-folder", ".", "bash", "-c", cmd.as_str()
-                ])
-            .join()
+        let res = devcontainer::exec_in_shell(cmd)
             .expect("Error executing command inside the container");
 
         if res.success() {
