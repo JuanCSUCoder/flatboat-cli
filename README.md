@@ -60,7 +60,7 @@ Learn about Flatboat with:
 
 ## Authors
 
-- [@JuanCSUCoder](https://www.github.com/JuanCSUCoder)
+- [@JuanCSUCoder - Juan Camilo Sánchez Urrego](https://www.github.com/JuanCSUCoder) - <juancsucoder@gmail.com>
 
 ## Roadmap
 
