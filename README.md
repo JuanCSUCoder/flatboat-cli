@@ -6,14 +6,6 @@ Flatboat is a CLI tool that integrates **Docker** and **Kubernetes** tooling int
 
 [![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-## Demo
-
-Insert gif or link to demo
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
 ## Features
 
 - **Automatic** container lifecycle managment

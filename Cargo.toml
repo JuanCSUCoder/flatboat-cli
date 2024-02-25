@@ -1,11 +1,10 @@
 [package]
 name = "flatboat"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Flatboat is a CLI tool that integrates **Docker** and **Kubernetes** tooling into the **ROS workspace** workflow."
 authors = ["Juan Camilo Sánchez Urrego @JuanCSUCoder <juancsucoder@gmail.com>"]
 license = "AGPL-3.0-only"
-license-file = "LICENSE.md"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
