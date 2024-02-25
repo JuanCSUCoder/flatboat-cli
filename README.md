@@ -27,7 +27,22 @@ Insert gif or link to demo
 - Out of the box **avahi service** for .local domain resolution
 - Compatible with **Devcontainer Specification**
 
+## Compatibility
+
+Compatible with **Linux** distributions capable of running **Docker** with **X11** window system and **avahi daemon**.
+
+**NOTE:** Linux distros with diferent configuration may be able to run flatboat with a few workarounds.
+
 ## Installation
+
+### Dependencies
+
+- Docker [Installation](https://docs.docker.com/engine/install/)
+- NodeJS [Official Download](https://nodejs.org/en) or [Installation with NodeSource](https://github.com/nodesource/distributions?tab=readme-ov-file#debian-and-ubuntu-based-distributions)
+- Devcontainer `npm i -g @devcontainers/cli`
+- Rust and Cargo `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+
+### Install
 
 Install Flatboat with `cargo`
 
