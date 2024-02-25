@@ -1,5 +1,7 @@
 # Flatboat
 
+*This repository is part of the [Flatboat Project](https://github.com/JuanCSUCoder/FlatBoatProject)*
+
 ![Logo](https://github.com/JuanCSUCoder/flatboat-brand/blob/main/logo.png?raw=true)
 
 Flatboat is a CLI tool that integrates **Docker** and **Kubernetes** tooling into the **ROS workspace** workflow.
