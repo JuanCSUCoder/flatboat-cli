@@ -10,22 +10,22 @@ Flatboat is a CLI tool that integrates **Docker** and **Kubernetes** tooling int
 
 ## Features
 
-- **Automatic** container lifecycle managment
+- **Automatic** container lifecycle management
 - **Create ROS workspaces** from devcontainer templates
 - **Execute ROS2 commands** inside the container
 - **Execute shell commands** inside the container
-- Out of the box graphical user interface **GUI support**
-- Out of the box **GPU support**
-- Out of the box workspace **volume binding**
-- Out of the box **host network** connectivity
-- Out of the box **avahi service** for .local domain resolution
+- Out-of-the-box graphical user interface **GUI support**
+- Out-of-the-box **GPU support**
+- Out-of-the-box workspace **volume binding**
+- Out-of-the-box **host network** connectivity
+- Out-of-the-box **avahi service** for .local domain resolution
 - Compatible with **Devcontainer Specification**
 
 ## Compatibility
 
 Compatible with **Linux** distributions capable of running **Docker** with **X11** window system and **avahi daemon**.
 
-**NOTE:** Linux distros with diferent configuration may be able to run flatboat with a few workarounds.
+**NOTE:** Linux distros with different configurations may be able to run flatboat with a few workarounds.
 
 ## Installation
 
