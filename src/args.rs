@@ -118,9 +118,9 @@ pub struct ExecArgs {
 
 /// Shell Completition Generation Subcommand
 #[derive(Args)]
-pub struct GeneratorArgs {
+pub struct CompletionArgs {
     // If provided, outputs the completion file for given shell
-    pub generator: clap_complete::Shell,
+    pub shell: clap_complete::Shell,
 }
 
 /// Commands
@@ -146,7 +146,7 @@ pub enum Commands {
     Exec(ExecArgs),
 
     /// Generate Shell Completitions
-    Generator(GeneratorArgs),
+    Completion(CompletionArgs),
 
     /// Information about the command-line application
     Info
