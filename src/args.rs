@@ -106,14 +106,14 @@ pub struct PackageArgs {
 #[derive(Args)]
 pub struct Ros2Args {
     /// ROS2 Command Arguments
-    pub ros2_args: String,
+    pub ros2_args: Vec<String>,
 }
 
 /// Exec Command Arguments
 #[derive(Args)]
 pub struct ExecArgs {
     /// Command to Run Inside Devcontainer
-    pub exec_cmd: String,
+    pub exec_cmd: Vec<String>,
 }
 
 /// Shell Completition Generation Subcommand
