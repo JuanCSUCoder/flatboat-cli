@@ -6,6 +6,9 @@ pub enum WorkspaceSubcommands {
     Create {
         /// Name of the workspace to be created
         ws_name: String,
+        
+        /// Name of the Workspace template image to pull from container registry
+        ws_image: String,
     }
 }
 
