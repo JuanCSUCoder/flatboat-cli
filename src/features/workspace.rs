@@ -29,18 +29,18 @@ fn create_ws_dir(ws_name: &String) -> PathBuf {
 }
 
 /// Downloads the files from the Workspace Template
-fn create_ws_files() -> Result<ExitStatus, PopenError>{
+fn create_ws_files(image_url: &String) -> Result<ExitStatus, PopenError>{
     Exec::cmd("devcontainer")
         .args(&[
             "templates",
             "apply",
             "-t",
-            "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu",
+            &image_url,
         ])
         .join()
 }
 
-fn create_ws(ws_name: String) {
+fn create_ws(ws_name: String, ws_image: Option<String>) {
     let path = create_ws_dir(&ws_name);
 
     match env::set_current_dir(path) {
@@ -48,14 +48,42 @@ fn create_ws(ws_name: String) {
         Err(_) => error!("Unable to access created folder {}", &ws_name),
     };
 
-    create_ws_files().expect("Error Creating Workspace Files!");
+    let possible_urls = if let Some(image) = ws_image {
+        vec![
+            format!("ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_{}", &image),
+            format!("ghcr.io/JuanCSUCoder/flatboat-templates/{}", &image),
+            format!("ghcr.io/JuanCSUCoder/{}", &image),
+            format!("ghcr.io/{}", &image),
+            format!("{}", &image),
+        ]
+    } else {
+        vec![
+            "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu".to_string()
+        ]
+    };
 
-    info!("Workspace Created Successfully!");
+    let mut success = false;
+    for possible_url in possible_urls {
+        info!("Trying to pull from {} ...", &possible_url);
+
+        let res = create_ws_files(&possible_url);
+
+        if let Ok(_) = res {
+            success = true;
+            break;
+        }
+    }
+
+    if success {
+        info!("Workspace Created Successfully!");
+    } else {
+        error!("Failed to create the workspace! Make sure the provided template image is correct.");
+    }
 }
 
 /// Handles all workspace related commands
 pub fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) {
     match ws_cmd {
-        args::WorkspaceSubcommands::Create { ws_name } => create_ws(ws_name)
+        args::WorkspaceSubcommands::Create { ws_name, ws_image } => create_ws(ws_name, ws_image)
     }
 }

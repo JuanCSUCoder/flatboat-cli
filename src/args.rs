@@ -6,6 +6,11 @@ pub enum WorkspaceSubcommands {
     Create {
         /// Name of the workspace to be created
         ws_name: String,
+        
+        /// Name of the Workspace template image to pull from container registry.
+        /// For example: "iron_nogpu", "roboten_ws_iron_nogpu", "flatboat-templates/roboten_ws_iron_nogpu", "JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu" or "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu"
+        /// By default flatboat searches on ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_...
+        ws_image: Option<String>,
     }
 }
 
@@ -101,21 +106,21 @@ pub struct PackageArgs {
 #[derive(Args)]
 pub struct Ros2Args {
     /// ROS2 Command Arguments
-    pub ros2_args: String,
+    pub ros2_args: Vec<String>,
 }
 
 /// Exec Command Arguments
 #[derive(Args)]
 pub struct ExecArgs {
     /// Command to Run Inside Devcontainer
-    pub exec_cmd: String,
+    pub exec_cmd: Vec<String>,
 }
 
 /// Shell Completition Generation Subcommand
 #[derive(Args)]
-pub struct GeneratorArgs {
+pub struct CompletionArgs {
     // If provided, outputs the completion file for given shell
-    pub generator: clap_complete::Shell,
+    pub shell: clap_complete::Shell,
 }
 
 /// Commands
@@ -141,7 +146,7 @@ pub enum Commands {
     Exec(ExecArgs),
 
     /// Generate Shell Completitions
-    Generator(GeneratorArgs),
+    Completion(CompletionArgs),
 
     /// Information about the command-line application
     Info

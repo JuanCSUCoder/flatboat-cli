@@ -48,9 +48,9 @@ fn main() {
 
 
         args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
-        args::Commands::Generator(gen_args) => {
+        args::Commands::Completion(gen_args) => {
             let mut cmd = Cli::command_for_update();
-            print_completions(gen_args.generator, &mut cmd);
+            print_completions(gen_args.shell, &mut cmd);
         },
     }
 }

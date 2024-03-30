@@ -1,8 +1,8 @@
 [package]
 name = "flatboat"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
-description = "Flatboat is a CLI tool that integrates **Docker** and **Kubernetes** tooling into the **ROS workspace** workflow."
+description = "Flatboat is a CLI tool that integrates Docker and Kubernetes tooling into the ROS workspace workflow."
 authors = ["Juan Camilo Sánchez Urrego @JuanCSUCoder <juancsucoder@gmail.com>"]
 license = "AGPL-3.0-only"
 readme = "README.md"
