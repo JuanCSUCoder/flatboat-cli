@@ -64,6 +64,8 @@ fn create_ws(ws_name: String, ws_image: Option<String>) {
 
     let mut success = false;
     for possible_url in possible_urls {
+        info!("Trying to pull from {} ...", &possible_url);
+
         let res = create_ws_files(&possible_url);
 
         if let Ok(_) = res {
