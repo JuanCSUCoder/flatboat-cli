@@ -2,22 +2,25 @@ use clap::{error::ErrorKind, CommandFactory};
 
 use crate::{args::{Cli, ExecArgs, Ros2Args}, toolkits::devcontainer};
 
-fn assert_args_provided(args: &Vec<String>) {
+fn extract_args(args: &Vec<String>) -> String {
     if args.is_empty() {
         Cli::command()
             .error(ErrorKind::MissingRequiredArgument, "No command provided! You should at least provide one argument for the command.")
             .exit();
     }
+
+    let mut str_args = String::new();
+    for arg in args {
+        str_args.push_str(&arg);
+        str_args.push(' ');
+    }
+
+    return str_args;
 }
 
 /// Handles ROS2 Command Arguments
 pub fn handle_ros2_cmd(ros2_args: Ros2Args) {
-    assert_args_provided(&ros2_args.ros2_args);
-
-    let mut args = "".to_string();
-    for arg in ros2_args.ros2_args {
-        args.push_str(&arg);
-    }
+    let args = extract_args(&ros2_args.ros2_args);
 
     if devcontainer::run_devcontainer().is_ok() {
         if devcontainer::exec_in_shell("ros2 ".to_string() + &args).is_ok() {
@@ -32,12 +35,7 @@ pub fn handle_ros2_cmd(ros2_args: Ros2Args) {
 
 /// Handles Exec Command Arguments
 pub fn handle_exec_cmd(exec_args: ExecArgs) {
-    assert_args_provided(&exec_args.exec_cmd);
-
-    let mut cmd = "".to_string();
-    for cmd_part in exec_args.exec_cmd {
-        cmd.push_str(&cmd_part);
-    }
+    let cmd = extract_args(&exec_args.exec_cmd);
 
     if devcontainer::run_devcontainer().is_ok() {
         if devcontainer::exec_in_shell(cmd).is_ok() {
