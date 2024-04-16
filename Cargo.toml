@@ -1,6 +1,6 @@
 [package]
 name = "flatboat"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "Flatboat is a CLI tool that integrates Docker and Kubernetes tooling into the ROS workspace workflow."
 authors = ["Juan Camilo Sánchez Urrego @JuanCSUCoder <juancsucoder@gmail.com>"]
