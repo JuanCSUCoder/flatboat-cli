@@ -1,5 +1,8 @@
 use super::constants::BASE_URL;
 
+fn search_manifest(manifest_locator: Option<String>) {
+}
+
 fn search_manifest_options(manifest_locator: Option<String>) -> Vec<String> {
     let manifest = match manifest_locator {
         Some(m) => m,
@@ -22,7 +25,10 @@ fn search_manifest_options(manifest_locator: Option<String>) -> Vec<String> {
     return options;
 }
 
-fn search_manifest(manifest_locator: Option<String>) {
+async fn search_manifest_from_options(possible_locations: Vec<String>) {
+    for location in possible_locations {
+        let req = reqwest::get(location).await;
+    }
 }
 
 #[cfg(test)]
