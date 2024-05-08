@@ -10,7 +10,7 @@ pub enum WorkspaceSubcommands {
         /// Name of the Workspace template image to pull from container registry.
         /// For example: "iron_nogpu", "roboten_ws_iron_nogpu", "flatboat-templates/roboten_ws_iron_nogpu", "JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu" or "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu"
         /// By default flatboat searches on ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_...
-        ws_image: Option<String>,
+        ws_manifest: Option<String>,
     }
 }
 

@@ -1,6 +1,7 @@
 mod args;
 mod features;
 mod toolkits;
+mod utils;
 
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
