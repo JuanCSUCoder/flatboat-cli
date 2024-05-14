@@ -19,12 +19,12 @@ async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Res
     let manifest = utils::manifest::Manifest::pull_or_default(ws_manifest).await?;
     
     // Pull and install devcontainer
-    create_ws_files(&manifest.artifacts.workspace);
+    create_ws_files(&manifest.artifacts.workspace)?;
 
     // Install the manifest inside the workspace
     path.push("flatboat.toml");
     let mut manifest_file = File::create(path)?;
-    manifest_file.write_all(toml::to_string_pretty(&manifest)?.as_bytes());
+    manifest_file.write_all(toml::to_string_pretty(&manifest)?.as_bytes())?;
 
     Ok(manifest)
 }

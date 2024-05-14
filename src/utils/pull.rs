@@ -32,7 +32,13 @@ impl From<toml::ser::Error> for PullError {
 }
 
 impl From<std::io::Error> for PullError {
-    fn from(value: std::io::Error) -> Self {
+    fn from(_value: std::io::Error) -> Self {
+        PullError::UnknownError
+    }
+}
+
+impl From<subprocess::PopenError> for PullError {
+    fn from(_value: subprocess::PopenError) -> Self {
         PullError::UnknownError
     }
 }

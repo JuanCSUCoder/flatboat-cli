@@ -7,7 +7,7 @@ mod output;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{any::Any, io, process};
+use std::{io, process};
 
 use args::Cli;
 use clap::{Parser, CommandFactory};

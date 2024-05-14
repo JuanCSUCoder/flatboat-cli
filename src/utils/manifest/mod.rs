@@ -4,7 +4,7 @@ mod  locator;
 
 /// Artifacts of a Flatboat Workspace
 #[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
-struct Artifacts {
+pub struct Artifacts {
 	pub workspace: String,
 	pub package: String,
 	pub workload: String,
