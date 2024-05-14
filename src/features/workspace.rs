@@ -2,7 +2,7 @@ use std::{env, fs, path::PathBuf, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
-use crate::{args, utils::constants::BASE_URL};
+use crate::args;
 
 /// Handles all workspace related commands
 pub fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) {
@@ -17,7 +17,7 @@ fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) {
     // Create the folder
     let path = create_ws_dir(&ws_name);
 
-    // TODO: Download the manifest
+    // Download the manifest
     // TODO: Read manifest
     // TODO: Pull and install devcontainer
 }

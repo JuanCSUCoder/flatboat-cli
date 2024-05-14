@@ -16,7 +16,8 @@ fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Comman
     clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     if std::env::var("RUST_LOG").is_err() {
         std::env::set_var("RUST_LOG", "info");
     }
