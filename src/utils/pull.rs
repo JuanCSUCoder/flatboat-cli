@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum PullError {
 	DownloadError(reqwest::Error),
 	ParseError(toml::de::Error),

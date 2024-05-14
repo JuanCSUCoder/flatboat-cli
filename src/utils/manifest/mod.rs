@@ -3,7 +3,7 @@ use super::pull;
 mod  locator;
 
 /// Artifacts of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
 struct Artifacts {
 	workspace: String,
 	package: String,
@@ -12,7 +12,7 @@ struct Artifacts {
 }
 
 /// Manifest of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
 struct Manifest {
 	name: String,
 	downloaded_from: Option<String>,
@@ -43,4 +43,25 @@ impl pull::Pullable for Manifest {
 			return Self::pull("humble_nogpu".to_owned()).await;
 		}
     }
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use tests::pull::{Pullable, PullError};
+
+	#[tokio::test]
+	async fn pull_or_default_test() -> Result<(), PullError> {
+		let man = Manifest::pull_or_default(None).await?;
+
+		println!("{:?}", man);
+
+		assert_eq!(man.name, "humble_nogpu".to_owned());
+		assert_eq!(man.artifacts.workspace, "JuanCSUCoder/flatboat-templates/roboten_ws_humble_nogpu".to_owned());
+		assert_eq!(man.artifacts.package, "JuanCSUCoder/flatboat-templates/pkg/humble/humble_nogpu".to_owned());
+		assert_eq!(man.artifacts.workload, "JuanCSUCoder/flatboat-templates/wl/humble/humble_nogpu".to_owned());
+		assert_eq!(man.artifacts.bot, "JuanCSUCoder/flatboat-templates/bot/humble/humble_nogpu".to_owned());
+
+		return Ok(())
+	}
 }
