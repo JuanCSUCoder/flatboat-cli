@@ -2,11 +2,12 @@ mod args;
 mod features;
 mod toolkits;
 mod utils;
+mod output;
 
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{process, io};
+use std::{any::Any, io, process};
 
 use args::Cli;
 use clap::{Parser, CommandFactory};
@@ -40,8 +41,12 @@ async fn main() {
     debug!("Data Directory: {:?}", data_dir);
 
     match cli.command {
-        args::Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand),
-        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
+        args::Commands::Workspace(ws_args) => {
+            features::workspace::handle_ws_cmd(ws_args.subcommand).await.expect("Error");
+        },
+        args::Commands::Package(pkg_args) => {
+            features::package::handle_pkg_cmd(pkg_args.subcommand).expect("Error");
+        },
 
         args::Commands::Bot(_) => todo!(),
         args::Commands::Workload(_) => todo!(),
@@ -49,10 +54,12 @@ async fn main() {
         args::Commands::Exec(exec_args) => features::cmds::handle_exec_cmd(exec_args),
 
 
-        args::Commands::Info => info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli"),
+        args::Commands::Info => {
+            info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli");
+        },
         args::Commands::Completion(gen_args) => {
             let mut cmd = Cli::command_for_update();
             print_completions(gen_args.shell, &mut cmd);
         },
-    }
+    };
 }
