@@ -5,18 +5,18 @@ mod  locator;
 /// Artifacts of a Flatboat Workspace
 #[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
 struct Artifacts {
-	workspace: String,
-	package: String,
-	workload: String,
-	bot: String,
+	pub workspace: String,
+	pub package: String,
+	pub workload: String,
+	pub bot: String,
 }
 
 /// Manifest of a Flatboat Workspace
 #[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
-struct Manifest {
-	name: String,
-	downloaded_from: Option<String>,
-	artifacts: Artifacts,
+pub struct Manifest {
+	pub name: String,
+	pub downloaded_from: Option<String>,
+	pub artifacts: Artifacts,
 }
 
 impl pull::Pullable for Manifest {

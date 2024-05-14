@@ -2,6 +2,7 @@
 pub enum PullError {
 	DownloadError(reqwest::Error),
 	ParseError(toml::de::Error),
+  SerializerError(toml::ser::Error),
 	NotFoundError,
 	UnknownError,
 }
@@ -22,4 +23,16 @@ impl From<toml::de::Error> for PullError {
 	fn from(value: toml::de::Error) -> Self {
 		PullError::ParseError(value)
 	}
+}
+
+impl From<toml::ser::Error> for PullError {
+	fn from(value: toml::ser::Error) -> Self {
+		PullError::SerializerError(value)
+	}
+}
+
+impl From<std::io::Error> for PullError {
+    fn from(value: std::io::Error) -> Self {
+        PullError::UnknownError
+    }
 }

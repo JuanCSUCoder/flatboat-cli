@@ -1,66 +1,32 @@
-use std::{env, fs, path::PathBuf, process};
+use std::{fs::{self, File}, io::Write, path::PathBuf, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
-use crate::args;
+use crate::{args, utils::{self, pull::Pullable}};
 
 /// Handles all workspace related commands
-pub fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) {
+pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
     return match ws_cmd {
-        args::WorkspaceSubcommands::Create { ws_name, ws_manifest } => load_from_manifest(ws_name, ws_manifest)
+        args::WorkspaceSubcommands::Create { ws_name, ws_manifest } => load_from_manifest(ws_name, ws_manifest).await
     }
 }
 
-fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) {
-    
-
+async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
     // Create the folder
-    let path = create_ws_dir(&ws_name);
+    let mut path = create_ws_dir(&ws_name);
 
     // Download the manifest
-    // TODO: Read manifest
-    // TODO: Pull and install devcontainer
-}
+    let manifest = utils::manifest::Manifest::pull_or_default(ws_manifest).await?;
+    
+    // Pull and install devcontainer
+    create_ws_files(&manifest.artifacts.workspace);
 
-fn create_ws(ws_name: String, ws_image: Option<String>) {
-    let path = create_ws_dir(&ws_name);
+    // Install the manifest inside the workspace
+    path.push("flatboat.toml");
+    let mut manifest_file = File::create(path)?;
+    manifest_file.write_all(toml::to_string_pretty(&manifest)?.as_bytes());
 
-    match env::set_current_dir(path) {
-        Ok(_) => info!("Entering Workspace ..."),
-        Err(_) => error!("Unable to access created folder {}", &ws_name),
-    };
-
-    let possible_urls = if let Some(image) = ws_image {
-        vec![
-            format!("ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_{}", &image),
-            format!("ghcr.io/JuanCSUCoder/flatboat-templates/{}", &image),
-            format!("ghcr.io/JuanCSUCoder/{}", &image),
-            format!("ghcr.io/{}", &image),
-            format!("{}", &image),
-        ]
-    } else {
-        vec![
-            "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_iron_nogpu".to_string()
-        ]
-    };
-
-    let mut success = false;
-    for possible_url in possible_urls {
-        info!("Trying to pull from {} ...", &possible_url);
-
-        let res = create_ws_files(&possible_url).unwrap();
-
-        if res.success() {
-            success = true;
-            break;
-        }
-    }
-
-    if success {
-        info!("Workspace Created Successfully!");
-    } else {
-        error!("Failed to create the workspace! Make sure the provided template image is correct.");
-    }
+    Ok(manifest)
 }
 
 /// Creates Workspace Directory
