@@ -57,7 +57,7 @@ mod tests {
 		println!("{:?}", man);
 
 		assert_eq!(man.name, "humble_nogpu".to_owned());
-		assert_eq!(man.artifacts.workspace, "JuanCSUCoder/flatboat-templates/roboten_ws_humble_nogpu".to_owned());
+		assert_eq!(man.artifacts.workspace, "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_humble_nogpu".to_owned());
 		assert_eq!(man.artifacts.package, "JuanCSUCoder/flatboat-templates/pkg/humble/humble_nogpu".to_owned());
 		assert_eq!(man.artifacts.workload, "JuanCSUCoder/flatboat-templates/wl/humble/humble_nogpu".to_owned());
 		assert_eq!(man.artifacts.bot, "JuanCSUCoder/flatboat-templates/bot/humble/humble_nogpu".to_owned());
