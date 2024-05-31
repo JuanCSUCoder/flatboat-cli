@@ -1,4 +1,4 @@
-use std::{fs::{self, File}, io::Write, path::PathBuf, process};
+use std::{env, fs::{self, File}, io::Write, path::PathBuf, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
@@ -14,6 +14,12 @@ pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> Result<utils::
 async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
     // Create the folder
     let mut path = create_ws_dir(&ws_name);
+
+    // Set current dir
+    match env::set_current_dir(&path) {
+        Ok(_) => info!("Entering Workspace ..."),
+        Err(_) => error!("Unable to access created folder {}", &ws_name),
+    };
 
     // Download the manifest
     let manifest = utils::manifest::Manifest::pull_or_default(ws_manifest).await?;
