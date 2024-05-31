@@ -1,4 +1,4 @@
-use std::{env, fs::{self, File}, io::Write, path::PathBuf, process};
+use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
@@ -13,10 +13,10 @@ pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> Result<utils::
 
 async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
     // Create the folder
-    let mut path = create_ws_dir(&ws_name);
+    let path = create_ws_dir(&ws_name);
 
     // Set current dir
-    match env::set_current_dir(&path) {
+    match env::set_current_dir(path) {
         Ok(_) => info!("Entering Workspace ..."),
         Err(_) => error!("Unable to access created folder {}", &ws_name),
     };
@@ -28,8 +28,8 @@ async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Res
     create_ws_files(&manifest.artifacts.workspace)?;
 
     // Install the manifest inside the workspace
-    path.push("flatboat.toml");
-    let mut manifest_file = File::create(path)?;
+    let file_path = Path::new("flatboat.toml");
+    let mut manifest_file = File::create(file_path)?;
     manifest_file.write_all(toml::to_string_pretty(&manifest)?.as_bytes())?;
 
     Ok(manifest)
@@ -61,12 +61,14 @@ fn create_ws_dir(ws_name: &String) -> PathBuf {
 
 /// Downloads the files from the Workspace Template
 fn create_ws_files(image_url: &String) -> Result<ExitStatus, PopenError>{
-    Exec::cmd("devcontainer")
+    let exit = Exec::cmd("devcontainer")
         .args(&[
             "templates",
             "apply",
             "-t",
             &image_url,
         ])
-        .join()
+        .join();
+
+    return Ok(exit.unwrap());
 }
