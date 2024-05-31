@@ -3,11 +3,13 @@ use subprocess::Exec;
 use crate::{args::PackageSubcommands, toolkits::devcontainer};
 
 /// Handles all commands related with packages
-pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) {
+pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) -> Result<(), ()> {
     match pkg_cmd {
         PackageSubcommands::Create { pkg_name } => create_pkg(&pkg_name),
         PackageSubcommands::Build { pkg_name } => build_pkg(&pkg_name),
     }
+
+    return Ok(());
 }
 
 /// Create a ROS Package Initialized with a Dockerfile for Building
