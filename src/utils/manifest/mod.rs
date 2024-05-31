@@ -37,7 +37,7 @@ impl pull::Pullable for Manifest {
     }
 
     async fn pull_or_default(locator: Option<String>) -> Result<Self, pull::PullError> {
-        if let Some(loc) = locator {
+		if let Some(loc) = locator {
 			return Self::pull(loc).await;
 		} else {
 			return Self::pull("humble_nogpu".to_owned()).await;
