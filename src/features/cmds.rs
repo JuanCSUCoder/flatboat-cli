@@ -1,6 +1,6 @@
 use clap::{error::ErrorKind, CommandFactory};
 
-use crate::{args::{Cli, ExecArgs, Ros2Args}, toolkits::devcontainer};
+use crate::{args::{Cli, ExecArgs, Ros2Args}, output::{ProgramError, ProgramOutput, ProgramResult}, toolkits::devcontainer};
 
 fn extract_args(args: &Vec<String>) -> String {
     if args.is_empty() {
@@ -19,31 +19,37 @@ fn extract_args(args: &Vec<String>) -> String {
 }
 
 /// Handles ROS2 Command Arguments
-pub fn handle_ros2_cmd(ros2_args: Ros2Args) {
+pub fn handle_ros2_cmd(ros2_args: Ros2Args) -> ProgramResult {
     let args = extract_args(&ros2_args.ros2_args);
 
     if devcontainer::run_devcontainer().is_ok() {
         if devcontainer::exec_in_shell("ros2 ".to_string() + &args).is_ok() {
-            debug!("Command Executed Successfully")
+            debug!("Command Executed Successfully");
+            Ok(ProgramOutput::Ok)
         } else {
-            error!("Command Execution Failed")
+            error!("Command Execution Failed");
+            Err(ProgramError::ROSError)
         }
     } else {
-        error!("Failed to start the devcontainer, check if the current directory is based on a valid devcontainer template")
+        error!("Failed to start the devcontainer, check if the current directory is based on a valid devcontainer template");
+        Err(ProgramError::DevcontainerError)
     }
 }
 
 /// Handles Exec Command Arguments
-pub fn handle_exec_cmd(exec_args: ExecArgs) {
+pub fn handle_exec_cmd(exec_args: ExecArgs) -> ProgramResult {
     let cmd = extract_args(&exec_args.exec_cmd);
 
     if devcontainer::run_devcontainer().is_ok() {
         if devcontainer::exec_in_shell(cmd).is_ok() {
-            debug!("Command Executed Successfully")
+            debug!("Command Executed Successfully");
+            Ok(ProgramOutput::Ok)
         } else {
-            error!("Command Execution Failed")
+            error!("Command Execution Failed");
+            Err(ProgramError::CommandError)
         }
     } else {
-        error!("Failed to start the devcontainer, check if the current directory is based on a valid devcontainer template")
+        error!("Failed to start the devcontainer, check if the current directory is based on a valid devcontainer template");
+        Err(ProgramError::DevcontainerError)
     }
 }

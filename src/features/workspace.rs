@@ -2,12 +2,20 @@ use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}, process};
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
-use crate::{args, utils::{self, pull::Pullable}};
+use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, utils::{self, pull::Pullable}};
 
 /// Handles all workspace related commands
-pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
-    return match ws_cmd {
+pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
+    let res = match ws_cmd {
         args::WorkspaceSubcommands::Create { ws_name, ws_manifest } => load_from_manifest(ws_name, ws_manifest).await
+    };
+
+    if let Ok(manifest) = res {
+        Ok(ProgramOutput::WSCreate(manifest))
+    } else if let Err(error) = res {
+        Err(ProgramError::WSCreate(error))
+    } else {
+        Err(ProgramError::UnknownError)
     }
 }
 
