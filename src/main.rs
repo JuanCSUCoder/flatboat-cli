@@ -68,7 +68,9 @@ async fn main() {
 
     if let Ok(output) = res {
         if ! matches!(output, ProgramOutput::NoOutput) {
-            println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
+            println!("{}", serde_json::to_string_pretty(&output).expect("JSON Serializer"));
         }
+    } else if let Err(err) = res {
+        println!("{}", serde_json::to_string_pretty(&err).expect("JSON Serializer"));
     }
 }
