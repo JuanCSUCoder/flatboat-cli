@@ -41,6 +41,11 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
     }
 }
 
+fn output_serialized(output: &impl serde::Serialize) {
+    println!("{}", toml::ser::to_string_pretty(&output).expect("TOML Serializer"));
+    println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
+}
+
 #[tokio::main]
 async fn main() {
     if std::env::var("RUST_LOG").is_err() {
@@ -68,9 +73,9 @@ async fn main() {
 
     if let Ok(output) = res {
         if ! matches!(output, ProgramOutput::NoOutput) {
-            println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
+            output_serialized(&output);
         }
     } else if let Err(err) = res {
-        println!("{}", serde_json::to_string(&err).expect("JSON Serializer"));
+        output_serialized(&err);
     }
 }
