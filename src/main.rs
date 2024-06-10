@@ -67,6 +67,8 @@ async fn main() {
     let res = run_command(cli, project_dirs).await;
 
     if let Ok(output) = res {
-        
+        if ! matches!(output, ProgramOutput::NoOutput) {
+            println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
+        }
     }
 }

@@ -1,8 +1,22 @@
+use serde::Serialize;
+use serde_derive::Serialize;
+
 #[derive(Debug)]
+pub struct SerializableError(pub Box<dyn std::fmt::Debug>);
+
+impl Serialize for SerializableError {
+		fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+		where
+				S: serde::Serializer {
+				serializer.serialize_str(format!("{:?}", self.0.as_ref()).as_str())
+		}
+}
+
+#[derive(Debug, Serialize)]
 pub enum PullError {
-	DownloadError(reqwest::Error),
-	ParseError(toml::de::Error),
-  SerializerError(toml::ser::Error),
+	DownloadError(SerializableError),
+	ParseError(SerializableError),
+  SerializerError(SerializableError),
 	NotFoundError,
 	UnknownError,
 }
@@ -15,19 +29,19 @@ pub trait Pullable {
 
 impl From<reqwest::Error> for PullError {
 	fn from(value: reqwest::Error) -> Self {
-		PullError::DownloadError(value)
+		PullError::DownloadError(SerializableError(Box::new(value)))
 	}
 }
 
 impl From<toml::de::Error> for PullError {
 	fn from(value: toml::de::Error) -> Self {
-		PullError::ParseError(value)
+		PullError::ParseError(SerializableError(Box::new(value)))
 	}
 }
 
 impl From<toml::ser::Error> for PullError {
 	fn from(value: toml::ser::Error) -> Self {
-		PullError::SerializerError(value)
+		PullError::SerializerError(SerializableError(Box::new(value)))
 	}
 }
 
