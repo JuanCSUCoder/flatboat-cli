@@ -1,6 +1,6 @@
-use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}, process};
+use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}};
 
-use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::Pullable}};
+use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::{PullError, Pullable}}};
 
 /// Handles all workspace related commands
 pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
@@ -19,7 +19,7 @@ pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult 
 
 async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Result<utils::manifest::Manifest, utils::pull::PullError> {
     // Create the folder
-    let path = create_ws_dir(&ws_name);
+    let path = create_ws_dir(&ws_name)?;
 
     // Set current dir
     match env::set_current_dir(path) {
@@ -42,7 +42,7 @@ async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Res
 }
 
 /// Creates Workspace Directory
-fn create_ws_dir(ws_name: &String) -> PathBuf {
+fn create_ws_dir(ws_name: &String) -> Result<PathBuf, PullError> {
     info!("Creating Workspace {} ...", &ws_name);
     let path = PathBuf::from(ws_name);
     match fs::create_dir(&path) {
@@ -58,10 +58,10 @@ fn create_ws_dir(ws_name: &String) -> PathBuf {
                 path.canonicalize(),
                 e
             );
-            process::exit(1);
+            return Err(PullError::WorkspaceAlreadyExistsError);
         }
     };
 
-    return path
+    return Ok(path)
 }
 
