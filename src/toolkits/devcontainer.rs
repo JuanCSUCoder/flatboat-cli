@@ -1,4 +1,4 @@
-use std::io::{self, BufRead, BufReader};
+use std::{io::{self, BufRead, BufReader, ErrorKind}, time::Duration};
 
 use subprocess::{Exec, ExitStatus, PopenError, Redirection};
 
@@ -18,7 +18,7 @@ pub fn exec_in_shell(cmd: String) -> Result<ExitStatus, PopenError> {
         .join()
 }
 
-fn wrapped_exec(exec: Exec) -> Result<ExitStatus, PopenError> {
+fn wrapped_exec(exec: Exec, timeout: Option<Duration>) -> Result<ExitStatus, PopenError> {
     let exec = exec.stdout(Redirection::Pipe)
         .stderr(Redirection::Merge);
     let mut p = exec.popen()?;
@@ -30,7 +30,12 @@ fn wrapped_exec(exec: Exec) -> Result<ExitStatus, PopenError> {
             info!("{}", line?);
         }
 
-        let exit = p.wait()?;
+        let exit;
+        if let Some(timeout_duration) = timeout {
+            exit = p.wait_timeout(timeout_duration)?.ok_or(PopenError::IoError(io::Error::new(ErrorKind::Other, "Devcontainer command timeout")))?;
+        } else {
+            exit = p.wait()?;
+        }
 
         return Ok(exit);
     } else {
@@ -48,5 +53,5 @@ pub fn create_ws_files(image_url: &String) -> Result<ExitStatus, PopenError>{
             "-t",
             &image_url,
         ]);
-    return  wrapped_exec(exec);
+    return wrapped_exec(exec, Some(Duration::from_secs(10)));
 }
