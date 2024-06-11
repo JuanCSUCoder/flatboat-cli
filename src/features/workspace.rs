@@ -1,8 +1,6 @@
 use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}, process};
 
-use subprocess::{Exec, ExitStatus, PopenError};
-
-use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, utils::{self, pull::Pullable}};
+use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::Pullable}};
 
 /// Handles all workspace related commands
 pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
@@ -67,16 +65,3 @@ fn create_ws_dir(ws_name: &String) -> PathBuf {
     return path
 }
 
-/// Downloads the files from the Workspace Template
-fn create_ws_files(image_url: &String) -> Result<ExitStatus, PopenError>{
-    let exit = Exec::cmd("devcontainer")
-        .args(&[
-            "templates",
-            "apply",
-            "-t",
-            &image_url,
-        ])
-        .join();
-
-    return Ok(exit.unwrap());
-}
