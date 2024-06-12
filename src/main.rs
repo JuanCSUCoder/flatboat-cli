@@ -42,9 +42,9 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
 }
 
 fn output_serialized(output: &impl serde::Serialize) {
-    println!("====== RESULT =======");
-    print!("{}", toml::ser::to_string_pretty(&output).expect("TOML Serializer"));
-    println!("=====================");
+    info!("====== RESULT =======");
+    info!("{}", toml::ser::to_string_pretty(&output).expect("TOML Serializer"));
+    info!("=====================");
     println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
 }
 
