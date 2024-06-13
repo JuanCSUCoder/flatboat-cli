@@ -12,7 +12,7 @@ use std::{io, process};
 use args::Cli;
 use clap::{Parser, CommandFactory};
 use directories::ProjectDirs;
-use output::{ProgramOutput, ProgramResult};
+use output::{ProgramOutput, ProgramOutputKind, ProgramResult};
 
 fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
     clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
@@ -31,12 +31,12 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
 
         args::Commands::Info => {
             info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli");
-            Ok(ProgramOutput::Ok)
+            Ok(ProgramOutput {kind: ProgramOutputKind::Ok, desc: "OK"})
         },
         args::Commands::Completion(gen_args) => {
             let mut cmd = Cli::command_for_update();
             print_completions(gen_args.shell, &mut cmd);
-            Ok(ProgramOutput::NoOutput)
+            Ok(ProgramOutput {kind: ProgramOutputKind::NoOutput, desc: ""})
         },
     }
 }
@@ -74,7 +74,7 @@ async fn main() {
     let res = run_command(cli, project_dirs).await;
 
     if let Ok(output) = res {
-        if ! matches!(output, ProgramOutput::NoOutput) {
+        if ! matches!(output.kind, ProgramOutputKind::NoOutput) {
             output_serialized(&output);
         }
     } else if let Err(err) = res {

@@ -1,6 +1,6 @@
 use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}};
 
-use crate::{args, output::{ProgramError, ProgramOutput, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::{PullError, Pullable}}};
+use crate::{args, output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::{PullError, Pullable}}};
 
 /// Handles all workspace related commands
 pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
@@ -9,11 +9,11 @@ pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult 
     };
 
     if let Ok(manifest) = res {
-        Ok(ProgramOutput::WSCreate(manifest))
+        Ok(ProgramOutput { kind: ProgramOutputKind::WSCreate(manifest), desc: "Success" })
     } else if let Err(error) = res {
-        Err(ProgramError::WSCreate(error))
+        Err(ProgramError { kind: ProgramErrorKind::WSCreate(error), desc: "Unable to create workspace." })
     } else {
-        Err(ProgramError::UnknownError)
+        Err(ProgramError { kind: ProgramErrorKind::UnknownError, desc: "Unknown error while creating workspace." })
     }
 }
 
