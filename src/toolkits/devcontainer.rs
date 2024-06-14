@@ -1,4 +1,6 @@
-use subprocess::{Exec, PopenError, ExitStatus};
+use std::{io::{self, BufRead, BufReader, ErrorKind}, time::Duration};
+
+use subprocess::{Exec, ExitStatus, PopenError, Redirection};
 
 /// Checks if a valid devcontainer is already running, and starts it if its not
 pub fn run_devcontainer() -> Result<ExitStatus, PopenError> {
@@ -14,4 +16,42 @@ pub fn exec_in_shell(cmd: String) -> Result<ExitStatus, PopenError> {
             "exec", "--workspace-folder", ".", "bash", "-c", cmd.as_str()
             ])
         .join()
+}
+
+fn wrapped_exec(exec: Exec, timeout: Option<Duration>) -> Result<ExitStatus, PopenError> {
+    let exec = exec.stdout(Redirection::Pipe)
+        .stderr(Redirection::Merge);
+    let mut p = exec.popen()?;
+
+    if let Some(stream) = &p.stdout {
+        let reader = BufReader::new(stream);
+
+        for line in reader.lines() {
+            info!("{}", line?);
+        }
+
+        let exit;
+        if let Some(timeout_duration) = timeout {
+            exit = p.wait_timeout(timeout_duration)?.ok_or(PopenError::IoError(io::Error::new(ErrorKind::Other, "Devcontainer command timeout")))?;
+        } else {
+            exit = p.wait()?;
+        }
+
+        return Ok(exit);
+    } else {
+        error!("Unable to get stream for devcontainer CLI");
+        return Err(PopenError::IoError(io::Error::new(io::ErrorKind::Other, "Unable to get stream for devcontainer CLI")));
+    }
+}
+
+/// Downloads the files from the Workspace Template
+pub fn create_ws_files(image_url: &String) -> Result<ExitStatus, PopenError>{
+    let exec = Exec::cmd("devcontainer")
+        .args(&[
+            "templates",
+            "apply",
+            "-t",
+            &image_url,
+        ]);
+    return wrapped_exec(exec, Some(Duration::from_secs(10)));
 }

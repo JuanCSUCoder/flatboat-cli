@@ -15,6 +15,7 @@ pub struct Artifacts {
 #[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
 pub struct Manifest {
     pub name: String,
+    pub version: Option<String>,
     pub downloaded_from: Option<String>,
     pub artifacts: Artifacts,
 }
