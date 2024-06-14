@@ -1,6 +1,6 @@
 [package]
 name = "flatboat"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 description = "Flatboat is a CLI tool that integrates Docker and Kubernetes tooling into the ROS workspace workflow."
 authors = ["Juan Camilo Sánchez Urrego @JuanCSUCoder <juancsucoder@gmail.com>"]
@@ -23,3 +23,4 @@ subprocess = "0.2.9"
 toml = "0.8.12"
 serde = "1.0.201"
 serde_derive = "1.0.201"
+serde_json = "1.0.117"
