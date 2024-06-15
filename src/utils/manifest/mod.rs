@@ -25,11 +25,12 @@ impl pull::Pullable for Manifest {
         let locations = locator::manifest_locations(locator);
 
         for location in locations {
-            let response = reqwest::get(location).await;
+            let response = reqwest::get(location.clone()).await;
 
             if let Ok(file_content) = response {
                 let file_str = file_content.text().await?;
-                let manifest = toml::from_str(&file_str)?;
+                let mut manifest: Manifest = toml::from_str(&file_str)?;
+                manifest.downloaded_from = Some(location);
                 return Ok(manifest);
             }
         }
