@@ -1,3 +1,5 @@
+use std::{fs::File, io::Read};
+
 use result::ManifestError;
 
 use super::pull;
@@ -28,9 +30,23 @@ pub struct Manifest {
 impl Manifest {
     /// Gets manifest from current workspace
     pub fn new() -> Result<Self, ManifestError> {
-        let _ = local_locator::get_manifest_locations()?;
+        let locations = local_locator::get_manifest_locations()?;
 
-        return Err(ManifestError { desc: "Not Implemented" });
+        for loc in locations {
+            let file_result = File::open(loc);
+
+            if let Ok(mut manifest_file) = file_result {
+                let mut content = String::new();
+                manifest_file.read_to_string(&mut content).ok().ok_or(ManifestError { desc: "Unable to read manifest file, check file permissions."})?;
+                let manifest: Manifest = toml::from_str(&content).ok().ok_or(ManifestError {
+                    desc: "Failed manifest deserialization, make sure flatboat.toml has the correct format and syntax."
+                })?;
+
+                return Ok(manifest);
+            }
+        }
+
+        return Err(ManifestError { desc: "Manifest file flatboat.toml not found" });
     }
 }
 
