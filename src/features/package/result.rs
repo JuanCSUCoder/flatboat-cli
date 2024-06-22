@@ -8,6 +8,7 @@ pub enum PackageErrorType {
     DevcontainerError,
     PackageCreationError,
     NotImplemented,
+    ManifestNotFound,
 }
 
 /// Package subcommand error information

@@ -1,6 +1,11 @@
+use result::ManifestError;
+
 use super::pull;
 
+mod result;
+
 mod locator;
+mod local_locator;
 
 /// Artifacts of a Flatboat Workspace
 #[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
@@ -18,6 +23,15 @@ pub struct Manifest {
     pub version: Option<String>,
     pub downloaded_from: Option<String>,
     pub artifacts: Artifacts,
+}
+
+impl Manifest {
+    /// Gets manifest from current workspace
+    pub fn new() -> Result<Self, ManifestError> {
+        let _ = local_locator::get_manifest_locations()?;
+
+        return Err(ManifestError { desc: "Not Implemented" });
+    }
 }
 
 impl pull::Pullable for Manifest {

@@ -5,7 +5,7 @@ use result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
 use crate::{
     args::PackageSubcommands,
     output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind},
-    toolkits::devcontainer,
+    toolkits::devcontainer, utils::manifest::Manifest,
 };
 
 /// Handles all commands related with packages
@@ -41,6 +41,12 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
                 kind: PackageErrorType::PackageCreationError,
                 desc: "Unable to create ROS package. Command execution failed.",
             })?;
+        
+        // Get current workspace Manifest
+        let _ = Manifest::new().ok().ok_or(PackageError {
+            kind: PackageErrorType::ManifestNotFound,
+            desc: "Unable to find manifest file, please make sure you are in the correct folder"
+        })?;
 
         if res.success() {
             // TODO: Adds Docker File Configuration
@@ -63,11 +69,13 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
 
 /// Builds a Docker Image for a ROS Package
 fn build_pkg(_pkg_name: &String) -> PackageResult {
-    // TODO: Start or check if workspace is started
+    // Start or check if workspace is started
+    devcontainer::run_devcontainer().ok().ok_or(PackageError {
+        kind: PackageErrorType::DevcontainerError,
+        desc: "Unable to start current folder devcontainer. Command execution failed.",
+    })?;
 
-    // TODO: Find Devcontainer Docker ID
-
-    // TODO: Build Docker Image for the Package with Tag
+    // Build package docker image
 
     return Err(PackageError { kind: PackageErrorType::NotImplemented, desc: "Package build not implemented yet!" })
 }
