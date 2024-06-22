@@ -30,6 +30,7 @@ mod tests {
 	#[test]
 	fn get_manifest_locations_test() {
 		let locations = get_manifest_locations().unwrap();
-		println!("{:?}", locations);
+
+		println!("Manually check: {:?}", locations);
 	}
 }
