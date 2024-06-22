@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use super::result::ManifestError;
 
-/// Function description
+/// Gets all possible manifest locations
 pub fn get_manifest_locations() -> Result<Vec<PathBuf>, ManifestError> {
 	let mut locations: Vec<PathBuf> = vec![];
 
@@ -18,10 +18,18 @@ pub fn get_manifest_locations() -> Result<Vec<PathBuf>, ManifestError> {
 		locations.push(manifest_path);
 	}
 
+	locations.pop();
+
 	return Ok(locations);
 }
 
-#[test]
-fn name() {
-	unimplemented!();
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn get_manifest_locations_test() {
+		let locations = get_manifest_locations().unwrap();
+		println!("{:?}", locations);
+	}
 }
