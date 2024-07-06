@@ -10,6 +10,7 @@ pub enum PackageErrorType {
     NotImplemented,
     ManifestNotFound,
     ConfigurationError,
+    DockerfileError,
 }
 
 /// Package subcommand error information

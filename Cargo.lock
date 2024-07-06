@@ -315,6 +315,7 @@ dependencies = [
  "directories",
  "inquire",
  "log",
+ "minijinja",
  "pretty_env_logger",
  "reqwest",
  "serde",
@@ -663,6 +664,15 @@ name = "mime"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6877bb514081ee2a7ff5ef9de3281f14a4dd4bceac4c09388074a6b5df8a139a"
+
+[[package]]
+name = "minijinja"
+version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "933ee10775d58fca8238a84fe165dfe4bde8b07d7574f24d76ffea91170f3ac6"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "miniz_oxide"
