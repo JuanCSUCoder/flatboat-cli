@@ -11,7 +11,10 @@ pub fn wrapped_exec(exec: Exec, timeout: Option<Duration>, program_name: &str) -
         let reader = BufReader::new(stream);
 
         for line in reader.lines() {
-            info!("{}", line?);
+            let sanitized = line?.replace(|c: char| !c.is_ascii() || c.is_control(), "").trim().to_owned();
+            if sanitized.len() > 1 {
+                info!("{}\r", sanitized);
+            }
         }
 
         let exit;
