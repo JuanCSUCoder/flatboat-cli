@@ -1,6 +1,6 @@
-use std::{env, path::Path};
+use std::{env, error::Error, fs::{self}, path::Path};
 
-use crate::{toolkits::{self, devcontainer}, utils::manifest::Manifest};
+use crate::{toolkits::{self, devcontainer}, utils::{manifest::Manifest, package_config::PackageConfig}};
 
 use super::result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
 
@@ -27,7 +27,7 @@ pub fn create_ros_package(pkg_name: &String) -> PackageResult {
 /// Provisions a package with Flatboat files
 pub fn provision_pkg(pkg_name: &String) -> PackageResult {
 	let pkg_str_path = "./src/".to_owned() + pkg_name;
-		let pkg_path = Path::new(&pkg_str_path);
+	let pkg_path = Path::new(&pkg_str_path);
 		
 	// Get current workspace Manifest
 	let manifest = Manifest::new().ok().ok_or(PackageError {
@@ -47,9 +47,33 @@ pub fn provision_pkg(pkg_name: &String) -> PackageResult {
 		desc: "ORAS command failed, unable to pull template from registry"
 	})?;
 
+	// Update pkg.toml
+	update_package_config(&pkg_name).ok().ok_or(PackageError {
+		kind: PackageErrorType::ConfigurationError,
+		desc: "Unable to properly configure pkg.toml, check if the file exists"
+	})?;
+
 	// TODO: Apply dockerfile template
 
 	return Ok(PackageOutput {
 		desc: "Successfull package creation"
 	});
+}
+
+const PKG_CONFIG_COMMENTS: &'static str = r#"
+# command_file = "move_run.py"
+# extra_args = '"--left", "30"'
+"#;
+
+fn update_package_config(pkg_name: &String) -> Result<(), Box<dyn Error>> {
+	let mut pkg_config = PackageConfig::from_current_folder()?;
+
+	pkg_config.package_name = pkg_name.clone();
+	pkg_config.command_file = None;
+	pkg_config.extra_args = None;
+
+	let file_content = toml::to_string_pretty(&pkg_config)? + PKG_CONFIG_COMMENTS;
+	fs::write("pkg.toml", file_content)?;
+
+	return Ok(());
 }

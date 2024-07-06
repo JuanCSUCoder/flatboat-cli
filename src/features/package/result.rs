@@ -9,6 +9,7 @@ pub enum PackageErrorType {
     PackageCreationError,
     NotImplemented,
     ManifestNotFound,
+    ConfigurationError,
 }
 
 /// Package subcommand error information
