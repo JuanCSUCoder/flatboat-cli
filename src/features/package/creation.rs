@@ -9,7 +9,7 @@ pub fn create_ros_package(pkg_name: &String) -> PackageResult {
 	// Exec Creation Command inside Devcontainer
 	let cmd = String::from("cd src && ros2 pkg create --build-type ament_python ") + pkg_name;
 	let res =
-		devcontainer::exec_in_shell(cmd).ok().ok_or(PackageError {
+		devcontainer::exec_in_shell(cmd, true).ok().ok_or(PackageError {
 			kind: PackageErrorType::PackageCreationError,
 			desc: "Unable to create ROS package. Command execution failed.",
 		})?;
