@@ -6,9 +6,10 @@ use crate::utils::exec::wrapped_exec;
 
 /// Checks if a valid devcontainer is already running, and starts it if its not
 pub fn run_devcontainer() -> Result<ExitStatus, PopenError> {
-    Exec::cmd("devcontainer")
-        .args(&["up", "--workspace-folder", "."])
-        .join()
+    let exec = Exec::cmd("devcontainer")
+        .args(&["up", "--workspace-folder", "."]);
+
+    return wrapped_exec(exec, Some(Duration::from_secs(10)), "Devcontainer CLI");
 }
 
 /// Executes a Linux Command Inside of the Devcontainer
