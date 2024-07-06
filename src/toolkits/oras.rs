@@ -5,7 +5,7 @@ use subprocess::{Exec, PopenError};
 use crate::utils;
 
 /// Pulls a template from a container registry
-pub fn pull_template(template_name: String) -> Result<subprocess::ExitStatus, PopenError> {
+pub fn pull_template(template_name: &String) -> Result<subprocess::ExitStatus, PopenError> {
   let cmd = Exec::cmd("oras")
     .args(&[
       "pull",

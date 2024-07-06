@@ -5,7 +5,7 @@ use result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
 use crate::{
     args::PackageSubcommands,
     output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind},
-    toolkits::devcontainer, utils::manifest::Manifest,
+    toolkits::{self, devcontainer}, utils::manifest::Manifest,
 };
 
 /// Handles all commands related with packages
@@ -43,13 +43,20 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
             })?;
         
         // Get current workspace Manifest
-        let _ = Manifest::new().ok().ok_or(PackageError {
+        let manifest = Manifest::new().ok().ok_or(PackageError {
             kind: PackageErrorType::ManifestNotFound,
             desc: "Unable to find manifest file, please make sure you are in the correct folder"
         })?;
 
         if res.success() {
-            // TODO: Adds Docker File Configuration
+            // Adds Docker File Configuration
+            toolkits::oras::pull_template(&manifest.artifacts.package).ok().ok_or(PackageError {
+                kind: PackageErrorType::PackageCreationError,
+                desc: "ORAS command failed, unable to pull template from registry"
+            })?;
+
+            // TODO: Apply dockerfile template
+
             return Ok(PackageOutput {
                 desc: "Successfull package creation"
             });
