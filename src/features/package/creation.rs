@@ -1,7 +1,5 @@
 use std::{env, error::Error, fs::{self}, path::Path};
 
-use minijinja::Template;
-
 use crate::{toolkits::{self, devcontainer}, utils::{manifest::Manifest, package_config::PackageConfig}};
 
 use super::result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
