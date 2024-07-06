@@ -1,5 +1,7 @@
 pub mod result;
 
+use std::{env, path::Path};
+
 use result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
 
 use crate::{
@@ -42,6 +44,9 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
                 desc: "Unable to create ROS package. Command execution failed.",
             })?;
         
+        let pkg_str_path = "./src/".to_owned() + pkg_name;
+        let pkg_path = Path::new(&pkg_str_path);
+        
         // Get current workspace Manifest
         let manifest = Manifest::new().ok().ok_or(PackageError {
             kind: PackageErrorType::ManifestNotFound,
@@ -49,6 +54,12 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
         })?;
 
         if res.success() {
+            // Moves inside the package direcctory
+            env::set_current_dir(pkg_path).ok().ok_or(PackageError {
+                kind: PackageErrorType::PackageCreationError,
+                desc: "Unable to open package folder"
+            })?;
+
             // Adds Docker File Configuration
             toolkits::oras::pull_template(&manifest.artifacts.package).ok().ok_or(PackageError {
                 kind: PackageErrorType::PackageCreationError,
