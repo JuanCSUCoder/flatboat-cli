@@ -25,6 +25,7 @@ pub struct Manifest {
     pub version: Option<String>,
     pub downloaded_from: Option<String>,
     pub artifacts: Artifacts,
+    pub ws_path: Option<String>,
 }
 
 impl Manifest {
@@ -33,14 +34,18 @@ impl Manifest {
         let locations = local_locator::get_manifest_locations()?;
 
         for loc in locations {
-            let file_result = File::open(loc);
+            let file_result = File::open(loc.clone());
 
             if let Ok(mut manifest_file) = file_result {
                 let mut content = String::new();
                 manifest_file.read_to_string(&mut content).ok().ok_or(ManifestError { desc: "Unable to read manifest file, check file permissions."})?;
-                let manifest: Manifest = toml::from_str(&content).ok().ok_or(ManifestError {
+                let mut manifest: Manifest = toml::from_str(&content).ok().ok_or(ManifestError {
                     desc: "Failed manifest deserialization, make sure flatboat.toml has the correct format and syntax."
                 })?;
+
+                manifest.ws_path = Some(loc.canonicalize().ok().ok_or(ManifestError {
+                    desc: "Unable to get workspace absolute path"
+                })?.display().to_string());
 
                 return Ok(manifest);
             }
