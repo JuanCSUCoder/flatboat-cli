@@ -22,22 +22,15 @@ fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Comman
 async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
     let manifest = Manifest::new();
 
-    let manifest = match manifest {
-        Ok(man) => man,
-        Err(err) => {
-            return Err(ProgramError {
-                desc: "Unable to load workspace manifest",
-                kind: ProgramErrorKind::ManifestErr(err)
-            });
-        },
-    };
-
-    match manifest.ws_path {
-        Some(str_path) => env::set_current_dir(PathBuf::from(str_path)).ok().ok_or(ProgramError {
-            desc: "Unable to inside workspace",
-            kind: ProgramErrorKind::UnknownError,
-        })?,
-        None => warn!("Workspace location not found!"),
+    match &manifest {
+        Ok(m) => match &m.ws_path {
+            Some(str_path) => env::set_current_dir(PathBuf::from(str_path)).ok().ok_or(ProgramError {
+                desc: "Unable go to inside workspace",
+                kind: ProgramErrorKind::UnknownError,
+            })?,
+            None => warn!("Workspace path not set in flatboat.toml!"),
+        }
+        Err(_) => warn!("Workspace commands disabled! You are not inside a workspace."),
     }
 
     match cli.command {
