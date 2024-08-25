@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read};
+use std::{fs::{File, OpenOptions}, io::{Read, Write}};
 
 use result::ManifestError;
 
@@ -48,11 +48,21 @@ impl Manifest {
                     desc: "Failed manifest deserialization, make sure flatboat.toml has the correct format and syntax."
                 })?;
 
-                manifest.ws_path = Some(loc.canonicalize().ok().ok_or(ManifestError {
+                let ws_path = loc.parent().expect("Should have a containing directory!");
+
+                manifest.ws_path = Some(ws_path.canonicalize().ok().ok_or(ManifestError {
                     desc: "Unable to get workspace absolute path"
                 })?.display().to_string());
 
                 debug!("Setting WS Path to {}", manifest.clone().ws_path.expect("WS Path should be defined"));
+
+                let mut manifest_file = OpenOptions::new().write(true).truncate(true).open(loc).ok().ok_or(ManifestError {
+                    desc: "Unable to write flatoboat.toml manifest file"
+                })?;
+                
+                manifest_file.write(content.as_bytes()).ok().ok_or(ManifestError {
+                    desc: "Failed writting flatoboat.toml manifest file"
+                })?;
 
                 return Ok(manifest);
             }
