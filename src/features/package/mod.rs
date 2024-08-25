@@ -35,9 +35,7 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
     })?;
 
     if res.success() {
-        creation::create_ros_package(pkg_name)?;
-
-        return creation::provision_pkg(pkg_name);
+        return creation::create_package(pkg_name);
     } else {
         return Err(PackageError {
             kind: PackageErrorType::DevcontainerError,
