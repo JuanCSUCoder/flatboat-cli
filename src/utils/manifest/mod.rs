@@ -4,7 +4,7 @@ use result::ManifestError;
 
 use super::pull;
 
-mod result;
+pub mod result;
 
 mod locator;
 mod local_locator;

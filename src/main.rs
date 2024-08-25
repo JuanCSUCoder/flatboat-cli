@@ -7,18 +7,39 @@ mod output;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{io, process};
+use std::{env, io, path::PathBuf, process};
 
 use args::Cli;
 use clap::{Parser, CommandFactory};
 use directories::ProjectDirs;
-use output::{ProgramOutput, ProgramOutputKind, ProgramResult};
+use output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult};
+use utils::manifest::Manifest;
 
 fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
     clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
 }
 
 async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
+    let manifest = Manifest::new();
+
+    let manifest = match manifest {
+        Ok(man) => man,
+        Err(err) => {
+            return Err(ProgramError {
+                desc: "Unable to load workspace manifest",
+                kind: ProgramErrorKind::ManifestErr(err)
+            });
+        },
+    };
+
+    match manifest.ws_path {
+        Some(str_path) => env::set_current_dir(PathBuf::from(str_path)).ok().ok_or(ProgramError {
+            desc: "Unable to inside workspace",
+            kind: ProgramErrorKind::UnknownError,
+        })?,
+        None => warn!("Workspace location not found!"),
+    }
+
     match cli.command {
         args::Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand).await,
         args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),

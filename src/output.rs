@@ -1,6 +1,6 @@
 use serde_derive::Serialize;
 
-use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::Manifest, pull::PullError}};
+use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::{result::ManifestError, Manifest}, pull::PullError}};
 
 pub type ProgramResult = Result<ProgramOutput, ProgramError>;
 
@@ -27,6 +27,7 @@ pub enum ProgramErrorKind {
 	ROSError,
 	CommandError,
 	DevcontainerError,
+    ManifestErr(ManifestError),
     UnknownError,
 }
 
