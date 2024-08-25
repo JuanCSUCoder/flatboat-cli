@@ -10,7 +10,7 @@ mod locator;
 mod local_locator;
 
 /// Artifacts of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug, Clone)]
 pub struct Artifacts {
     pub workspace: String,
     pub package: String,
@@ -19,7 +19,7 @@ pub struct Artifacts {
 }
 
 /// Manifest of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug, Clone)]
 pub struct Manifest {
     pub name: String,
     pub version: Option<String>,
@@ -36,8 +36,13 @@ impl Manifest {
         for loc in locations {
             let file_result = File::open(loc.clone());
 
+            debug!("Searching for workspace at {}", loc.display().to_string());
+
             if let Ok(mut manifest_file) = file_result {
                 let mut content = String::new();
+
+                debug!("Found workspace at {}", loc.display().to_string());
+
                 manifest_file.read_to_string(&mut content).ok().ok_or(ManifestError { desc: "Unable to read manifest file, check file permissions."})?;
                 let mut manifest: Manifest = toml::from_str(&content).ok().ok_or(ManifestError {
                     desc: "Failed manifest deserialization, make sure flatboat.toml has the correct format and syntax."
@@ -46,6 +51,8 @@ impl Manifest {
                 manifest.ws_path = Some(loc.canonicalize().ok().ok_or(ManifestError {
                     desc: "Unable to get workspace absolute path"
                 })?.display().to_string());
+
+                debug!("Setting WS Path to {}", manifest.clone().ws_path.expect("WS Path should be defined"));
 
                 return Ok(manifest);
             }
