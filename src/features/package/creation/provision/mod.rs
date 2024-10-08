@@ -1,4 +1,5 @@
 mod pkg_ops;
+mod result;
 
 use std::{env, path::Path};
 
@@ -25,18 +26,6 @@ pub fn provision_pkg(pkg_name: &String) -> PackageResult {
 	toolkits::oras::pull_template(&manifest.artifacts.package).ok().ok_or(PackageError {
 		kind: PackageErrorType::PackageCreationError,
 		desc: "ORAS command failed, unable to pull template from registry"
-	})?;
-
-	// Update pkg.toml
-	pkg_ops::update_package_config(&pkg_name).ok().ok_or(PackageError {
-		kind: PackageErrorType::ConfigurationError,
-		desc: "Unable to properly configure pkg.toml, check if the file exists"
-	})?;
-
-	// Apply dockerfile template
-	pkg_ops::apply_dockerfile_template().ok().ok_or(PackageError {
-		kind: PackageErrorType::DockerfileError,
-		desc: "Unable to generate Dockerfile from package configuration"
 	})?;
 
 	return Ok(PackageOutput {
