@@ -96,5 +96,6 @@ async fn main() {
         }
     } else if let Err(err) = res {
         error!("Error: {}", err.kind);
+        output_serialized(&err);
     }
 }
