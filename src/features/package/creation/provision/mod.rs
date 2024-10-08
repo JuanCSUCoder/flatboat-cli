@@ -1,5 +1,4 @@
 mod pkg_ops;
-mod result;
 
 use std::{env, path::Path};
 
@@ -27,6 +26,8 @@ pub fn provision_pkg(pkg_name: &String) -> PackageResult {
 		kind: PackageErrorType::PackageCreationError,
 		desc: "ORAS command failed, unable to pull template from registry"
 	})?;
+
+	pkg_ops::provision_template(pkg_name)?;
 
 	return Ok(PackageOutput {
 		desc: "Successfull package creation"
