@@ -1,4 +1,4 @@
-mod result;
+pub mod result;
 
 use std::fs;
 
