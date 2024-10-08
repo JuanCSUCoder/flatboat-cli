@@ -1,7 +1,7 @@
 pub mod creation;
 pub mod result;
 
-use result::{PackageError, PackageErrorType, PackageResult};
+use result::{PackageError, PackageResult};
 
 use crate::{
     args::PackageSubcommands,
@@ -29,30 +29,21 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) -> Result<ProgramOutput, Prog
 /// Create a ROS Package Initialized with a Dockerfile for Building
 fn create_pkg(pkg_name: &String) -> PackageResult {
     // Start or check if workspace is started
-    let res = devcontainer::run_devcontainer().ok().ok_or(PackageError {
-        kind: PackageErrorType::DevcontainerError,
-        desc: "Unable to start current folder devcontainer. Command execution failed.",
-    })?;
+    let res = devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
     if res.success() {
         return creation::create_package(pkg_name);
     } else {
-        return Err(PackageError {
-            kind: PackageErrorType::DevcontainerError,
-            desc: "Unable to start current folder devcontainer. Non zero exit status.",
-        });
+        return Err(PackageError::DevcontainerError);
     }
 }
 
 /// Builds a Docker Image for a ROS Package
 fn build_pkg(_pkg_name: &String) -> PackageResult {
     // Start or check if workspace is started
-    devcontainer::run_devcontainer().ok().ok_or(PackageError {
-        kind: PackageErrorType::DevcontainerError,
-        desc: "Unable to start current folder devcontainer. Command execution failed.",
-    })?;
+    devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
     // Build package docker image
 
-    return Err(PackageError { kind: PackageErrorType::NotImplemented, desc: "Package build not implemented yet!" })
+    return Err(PackageError::NotImplemented);
 }
