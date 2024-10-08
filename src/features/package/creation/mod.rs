@@ -1,4 +1,4 @@
-mod provision;
+pub mod provision;
 
 use crate::toolkits::devcontainer;
 
@@ -6,8 +6,10 @@ use super::result::{PackageError, PackageErrorType, PackageOutput, PackageResult
 
 pub fn create_package(pkg_name: &String) -> PackageResult {
   create_ros_package(pkg_name)?;
+	
+	let output = provision::provision_pkg(pkg_name)?;
 
-  return provision::provision_pkg(pkg_name);
+  Ok(output)
 }
 
 /// Creates a ROS2 package

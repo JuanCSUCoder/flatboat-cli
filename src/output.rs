@@ -1,4 +1,5 @@
 use serde_derive::Serialize;
+use thiserror::Error;
 
 use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::{result::ManifestError, Manifest}, pull::PullError}};
 
@@ -20,7 +21,7 @@ pub struct ProgramOutput {
     pub desc: &'static str,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug, Error)]
 pub enum ProgramErrorKind {
     WSCreate(PullError),
     PKGCreate(PackageError),
