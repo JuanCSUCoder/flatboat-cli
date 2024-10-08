@@ -1,4 +1,4 @@
-use std::{error::Error, fs, path::Path};
+use std::{fs, path::Path};
 
 use serde_derive::{Deserialize, Serialize};
 

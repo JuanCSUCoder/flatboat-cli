@@ -2,7 +2,7 @@ use serde::{ser::SerializeSeq, Serialize};
 use serde_derive::Serialize;
 use thiserror::Error;
 
-use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::{result::ManifestError, Manifest}, pull::PullError}};
+use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::Manifest, pull::PullError}};
 
 pub type ProgramResult = Result<ProgramOutput, ProgramError>;
 
@@ -38,9 +38,6 @@ pub enum ProgramErrorKind {
 
     #[error("Error with devcontainer")]
 	DevcontainerError,
-
-    #[error("Invalid or inexistent workspace manifest")]
-    ManifestErr(ManifestError),
 
     #[error("Unknown Error")]
     UnknownError,

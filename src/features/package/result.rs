@@ -21,15 +21,6 @@ pub enum PackageError {
     #[error("Feature not implemented!")]
     NotImplemented,
 
-    #[error("Unable to find the manifest")]
-    ManifestNotFound,
-
-    #[error("Unable to configure the package")]
-    ConfigurationError,
-
-    #[error("Unable to create the Dockerfile")]
-    DockerfileError,
-
     #[error("Provision error: {0}")]
     ProvisionError(#[from] ProvisionError),
 }
