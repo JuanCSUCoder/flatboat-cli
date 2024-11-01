@@ -35,44 +35,21 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
     return core::runner::handle_command(cli.command).await;
 }
 
-fn output_serialized(output: &impl serde::Serialize) {
-    info!("====== RESULT =======");
-    info!("\n{}", toml::ser::to_string_pretty(&output).expect("TOML Serializer"));
-    info!("=====================");
-    println!("{}", serde_json::to_string(&output).expect("JSON Serializer"));
-}
-
 #[tokio::main]
 async fn main() {
-    if std::env::var("RUST_LOG").is_err() {
-        std::env::set_var("RUST_LOG", "info");
-    }
-
-    pretty_env_logger::init();
+    core::helpers::setup_logging();
     let cli = Cli::parse();
-
-    let project_dirs = ProjectDirs::from("codes", "juancsu", "flatboat");
-
-    if project_dirs.is_none() {
-        error!("Unable to locate application folders");
-        process::exit(1);
-    } else {
-        debug!("Located folders {:?}", &project_dirs);
-    }
-
-    let project_dirs = project_dirs.unwrap();
-    let data_dir = project_dirs.data_dir();
-
-    debug!("Data Directory: {:?}", data_dir);
+    let project_dirs = core::helpers::setup_directories();
 
     let res = run_command(cli, project_dirs).await;
 
     if let Ok(output) = res {
         if ! matches!(output.kind, ProgramOutputKind::NoOutput) {
-            output_serialized(&output);
+            info!("Finished successfully!");
+            core::helpers::output_serialized(&output);
         }
     } else if let Err(err) = res {
         error!("Error: {}", err.kind);
-        output_serialized(&err);
+        core::helpers::output_serialized(&err);
     }
 }
