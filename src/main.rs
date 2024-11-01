@@ -6,18 +6,14 @@ mod utils;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{env, io, path::PathBuf, process};
+use std::{env, path::PathBuf, process};
 
 use core::args;
 use core::args::Cli;
-use clap::{Parser, CommandFactory};
+use clap::Parser;
 use directories::ProjectDirs;
-use core::output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult};
+use core::output::{ProgramError, ProgramErrorKind, ProgramOutputKind, ProgramResult};
 use utils::manifest::Manifest;
-
-fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
-    clap_complete::generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
-}
 
 async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
     let manifest = Manifest::new();
@@ -36,26 +32,7 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
         Err(_) => warn!("Workspace commands disabled! You are not inside a workspace."),
     }
 
-    match cli.command {
-        args::Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand).await,
-        args::Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
-
-        args::Commands::Bot(_) => todo!(),
-        args::Commands::Workload(_) => todo!(),
-        args::Commands::Ros2(ros2_args) => features::cmds::handle_ros2_cmd(ros2_args),
-        args::Commands::Exec(exec_args) => features::cmds::handle_exec_cmd(exec_args),
-
-
-        args::Commands::Info => {
-            info!("FlatBoat is a command-line interface application used to access, configure and manage dockerized ROS2 development environments, and for interfacing with ros2 cli");
-            Ok(ProgramOutput {kind: ProgramOutputKind::Ok, desc: "OK"})
-        },
-        args::Commands::Completion(gen_args) => {
-            let mut cmd = Cli::command_for_update();
-            print_completions(gen_args.shell, &mut cmd);
-            Ok(ProgramOutput {kind: ProgramOutputKind::NoOutput, desc: ""})
-        },
-    }
+    return core::runner::handle_command(cli.command);
 }
 
 fn output_serialized(output: &impl serde::Serialize) {
