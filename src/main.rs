@@ -6,7 +6,7 @@ mod utils;
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use std::{env, path::PathBuf, process};
+use std::{env, path::PathBuf};
 
 use core::args;
 use core::args::Cli;
