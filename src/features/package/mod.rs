@@ -5,7 +5,7 @@ mod pkg_build;
 
 use std::path::Path;
 
-use result::{PackageError, PackageResult};
+use result::{PackageError, PackageOutput, PackageResult};
 
 use crate::{
     args::PackageSubcommands,
@@ -60,5 +60,7 @@ fn build_pkg(pkg_name: &str) -> PackageResult {
     // Build package docker image
     pkg_build::build_package(pkg_name, &ws, &dockerfile)?;
 
-    return Err(PackageError::NotImplemented);
+    return Ok(PackageOutput {
+        desc: "Package image built successfully!",
+    });
 }
