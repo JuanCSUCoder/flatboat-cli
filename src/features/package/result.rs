@@ -1,6 +1,10 @@
+use std::io;
+
 use serde_derive::Serialize;
 use subprocess::PopenError;
 use thiserror::Error;
+
+use crate::{toolkits::jinja::TemplatingError, utils::result::PackageConfigError};
 
 use super::{creation::provision::result::ProvisionError, pkg_build::BuildError};
 
@@ -26,6 +30,15 @@ pub enum PackageError {
 
     #[error("Unable to build package")]
     PackageBuildError(#[from] BuildError),
+
+    #[error("Unable to resolve absolute path for the current workspace")]
+    PathResolutionError(#[from] io::Error),
+
+    #[error("Unable to read package configuration: {0}")]
+    PackageConfigError(#[from] PackageConfigError),
+
+    #[error("Failed to process template: {0}")]
+    TemplatingError(#[from] TemplatingError),
 }
 
 /// Package subcommand success output

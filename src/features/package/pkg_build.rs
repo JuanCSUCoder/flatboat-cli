@@ -17,10 +17,7 @@ pub enum BuildError {
 }
 
 /// Builds the selected package as a docker image
-pub fn build_package(pkg_name: &str) -> Result<(), BuildError> {
-  let ws = Path::new(".").canonicalize()?;
-  let dockerfile = ws.join("src").join(pkg_name).join("Dockerfile");
-
+pub fn build_package(pkg_name: &str, ws: &Path, dockerfile: &Path) -> Result<(), BuildError> {
   let manifest = Manifest::new()?;
 
   crate::toolkits::docker::build_image(&ws, &dockerfile, &format!("flatboat-{}/{}", manifest.name, pkg_name))?;

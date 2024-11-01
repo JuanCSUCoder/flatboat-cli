@@ -21,4 +21,10 @@ impl PackageConfig {
       
       return Ok(toml::de::from_str::<Self>(&file_content)?);
     }
+
+    pub fn from_path(pkg_path: &Path) -> Result<Self, PackageConfigError> {
+      let file_content = fs::read_to_string(pkg_path.join("pkg.toml"))?;
+
+      return Ok(toml::de::from_str(&file_content)?);
+    }
 }

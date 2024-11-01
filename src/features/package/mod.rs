@@ -3,12 +3,14 @@ pub mod result;
 
 mod pkg_build;
 
+use std::path::Path;
+
 use result::{PackageError, PackageResult};
 
 use crate::{
     args::PackageSubcommands,
     output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind},
-    toolkits::devcontainer,
+    toolkits::{self, devcontainer}, utils::package_config::PackageConfig,
 };
 
 /// Handles all commands related with packages
@@ -45,8 +47,18 @@ fn build_pkg(pkg_name: &str) -> PackageResult {
     // Start or check if workspace is started
     devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
+    // Get workspace and package paths
+    let ws = Path::new(".").canonicalize()?;
+    let pkg_path = ws.join("src").join(pkg_name);
+    let template = pkg_path.join("Dockerfile.jinja");
+    let dockerfile = pkg_path.join("Dockerfile");
+    let pkg_config = PackageConfig::from_path(&pkg_path)?;
+
+    // Generate Dockerfile from template
+    toolkits::jinja::process_template(&template, &dockerfile, &pkg_config)?;
+
     // Build package docker image
-    pkg_build::build_package(pkg_name)?;
+    pkg_build::build_package(pkg_name, &ws, &dockerfile)?;
 
     return Err(PackageError::NotImplemented);
 }

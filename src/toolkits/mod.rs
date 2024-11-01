@@ -1,8 +1,11 @@
 mod devcontainer_tk;
 mod oras_tk;
 mod docker_tk;
+mod jinja_tk;
 
 mod public {
+  use super::*;
+
   pub mod devcontainer {
     pub use crate::toolkits::devcontainer_tk::{
       run_devcontainer,
@@ -18,10 +21,20 @@ mod public {
   pub mod docker {
     pub use crate::toolkits::docker_tk::build_image;
   }
+
+  pub mod jinja {
+    use super::*;
+
+    pub use jinja_tk::{
+      process_template,
+      TemplatingError,
+    };
+  }
 }
 
 pub use public::{
   devcontainer,
   oras,
   docker,
+  jinja,
 };
