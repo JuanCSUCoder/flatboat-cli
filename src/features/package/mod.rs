@@ -1,6 +1,8 @@
 pub mod creation;
 pub mod result;
 
+mod pkg_build;
+
 use result::{PackageError, PackageResult};
 
 use crate::{
@@ -39,11 +41,12 @@ fn create_pkg(pkg_name: &String) -> PackageResult {
 }
 
 /// Builds a Docker Image for a ROS Package
-fn build_pkg(_pkg_name: &String) -> PackageResult {
+fn build_pkg(pkg_name: &str) -> PackageResult {
     // Start or check if workspace is started
     devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
     // Build package docker image
+    pkg_build::build_package(pkg_name)?;
 
     return Err(PackageError::NotImplemented);
 }

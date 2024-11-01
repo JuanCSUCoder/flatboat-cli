@@ -2,7 +2,7 @@ use serde_derive::Serialize;
 use subprocess::PopenError;
 use thiserror::Error;
 
-use super::creation::provision::result::ProvisionError;
+use super::{creation::provision::result::ProvisionError, pkg_build::BuildError};
 
 pub type PackageResult = Result<PackageOutput, PackageError>;
 
@@ -23,6 +23,9 @@ pub enum PackageError {
 
     #[error("Provision error: {0}")]
     ProvisionError(#[from] ProvisionError),
+
+    #[error("Unable to build package")]
+    PackageBuildError(#[from] BuildError),
 }
 
 /// Package subcommand success output
