@@ -1,18 +1,18 @@
-mod args;
+mod core;
 mod features;
 mod toolkits;
 mod utils;
-mod output;
 
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
 use std::{env, io, path::PathBuf, process};
 
-use args::Cli;
+use core::args;
+use core::args::Cli;
 use clap::{Parser, CommandFactory};
 use directories::ProjectDirs;
-use output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult};
+use core::output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult};
 use utils::manifest::Manifest;
 
 fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Command) {
