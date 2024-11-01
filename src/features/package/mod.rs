@@ -24,7 +24,7 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) -> Result<ProgramOutput, Prog
     if let Ok(pkg_out) = pkg_res {
         return Ok(ProgramOutput { kind: ProgramOutputKind::PKGCreate(pkg_out), desc: "Package created successfully" });
     } else if let Err(pkg_err) = pkg_res {
-        return  Err(ProgramError { kind: ProgramErrorKind::PKGCreate(pkg_err), desc: "Failed package creation" });
+        return  Err(ProgramError { kind: ProgramErrorKind::PKG(pkg_err), desc: "Failed package creation" });
     } else {
         return Err(ProgramError { kind: ProgramErrorKind::UnknownError, desc: "" });
     }

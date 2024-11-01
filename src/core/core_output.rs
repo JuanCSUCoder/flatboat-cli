@@ -27,8 +27,8 @@ pub enum ProgramErrorKind {
     #[error("Unable to create workspace")]
     WSCreate(PullError),
 
-    #[error("Unable to create package")]
-    PKGCreate(PackageError),
+    #[error("Unable to process package command: {0}")]
+    PKG(PackageError),
 
     #[error("Error with ROS command")]
 	ROSError,
