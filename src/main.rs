@@ -8,7 +8,10 @@ extern crate pretty_env_logger;
 
 use std::{env, path::PathBuf};
 
-use core::args;
+use core::{
+    args,
+    output,
+};
 use core::args::Cli;
 use clap::Parser;
 use directories::ProjectDirs;

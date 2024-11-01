@@ -3,6 +3,7 @@ mod core_output;
 mod core_runner;
 mod core_helpers;
 
+#[allow(unused_imports)]
 mod public {
   use super::*;
 
@@ -12,6 +13,19 @@ mod public {
     pub use core_args::{
       Cli,
       Commands,
+
+      WorkspaceSubcommands,
+      BotSubcommands,
+      PackageSubcommands,
+      WorkloadSubcommands,
+
+      BotArgs,
+      CompletionArgs,
+      ExecArgs,
+      PackageArgs,
+      Ros2Args,
+      WorkloadArgs,
+      WorkspaceArgs,
     };
   }
 
