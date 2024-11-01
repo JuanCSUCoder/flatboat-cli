@@ -1,3 +1,5 @@
+use std::io;
+
 use clap::CommandFactory;
 
 use crate::core::args::{Cli, Commands};
@@ -11,7 +13,7 @@ fn print_completions<G: clap_complete::Generator>(gen: G, cmd: &mut clap::Comman
 }
 
 /// Handles the command information to the appropiate handler
-pub fn handle_command(cmd: Commands) -> ProgramResult {
+pub async fn handle_command(cmd: Commands) -> ProgramResult {
   match cmd {
         Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand).await,
         Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),

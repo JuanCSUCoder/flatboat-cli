@@ -32,7 +32,7 @@ async fn run_command(cli: Cli, _project_dirs: ProjectDirs) -> ProgramResult {
         Err(_) => warn!("Workspace commands disabled! You are not inside a workspace."),
     }
 
-    return core::runner::handle_command(cli.command);
+    return core::runner::handle_command(cli.command).await;
 }
 
 fn output_serialized(output: &impl serde::Serialize) {
