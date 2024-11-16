@@ -30,6 +30,7 @@ pub fn create_wl(wl_name: &str) -> Result<(), CreateWorkloadError> {
     .join(wl_name);
 
   // Moves inside the package direcctory
+  std::fs::create_dir_all(&pkg_path)?;
 	env::set_current_dir(pkg_path)?;
 
 	// Adds Docker File Configuration
