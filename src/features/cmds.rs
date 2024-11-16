@@ -23,7 +23,7 @@ pub fn handle_ros2_cmd(ros2_args: Ros2Args) -> ProgramResult {
     let args = extract_args(&ros2_args.ros2_args);
 
     if devcontainer::run_devcontainer().is_ok() {
-        if devcontainer::exec_in_shell("ros2 ".to_string() + &args).is_ok() {
+        if devcontainer::exec_in_shell("ros2 ".to_string() + &args, false).is_ok() {
             debug!("Command Executed Successfully");
             Ok(ProgramOutput {kind: ProgramOutputKind::Ok, desc: "OK"})
         } else {
@@ -41,7 +41,7 @@ pub fn handle_exec_cmd(exec_args: ExecArgs) -> ProgramResult {
     let cmd = extract_args(&exec_args.exec_cmd);
 
     if devcontainer::run_devcontainer().is_ok() {
-        if devcontainer::exec_in_shell(cmd).is_ok() {
+        if devcontainer::exec_in_shell(cmd, false).is_ok() {
             debug!("Command Executed Successfully");
             Ok(ProgramOutput {kind: ProgramOutputKind::Ok, desc: "OK"})
         } else {
