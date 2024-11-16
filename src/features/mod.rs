@@ -2,19 +2,19 @@ pub mod workspace;
 pub mod package;
 pub mod cmds;
 
-mod bot_feature;
+mod wl_feature;
 
 pub mod public {
   use super::*;
 
-  pub mod bot {
+  pub mod workload {
     use super::*;
 
-    pub use bot_feature::{
-      handle_bot_cmd,
-      BotCmdError,
+    pub use wl_feature::{
+      handle_wl_cmd,
+      WorkloadCmdError,
     };
   }
 }
 
-pub use public::bot;
+pub use public::workload;

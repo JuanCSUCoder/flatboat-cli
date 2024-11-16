@@ -18,8 +18,8 @@ pub async fn handle_command(cmd: Commands) -> ProgramResult {
         Commands::Workspace(ws_args) => features::workspace::handle_ws_cmd(ws_args.subcommand).await,
         Commands::Package(pkg_args) => features::package::handle_pkg_cmd(pkg_args.subcommand),
 
-        Commands::Bot(bot_args) => features::bot::handle_bot_cmd(bot_args.subcommand),
-        Commands::Workload(_) => todo!(),
+        Commands::Bot(_bot_args) => todo!(),
+        Commands::Workload(wl_args) => features::workload::handle_wl_cmd(wl_args.subcommand),
         Commands::Ros2(ros2_args) => features::cmds::handle_ros2_cmd(ros2_args),
         Commands::Exec(exec_args) => features::cmds::handle_exec_cmd(exec_args),
 
