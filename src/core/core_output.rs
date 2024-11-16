@@ -2,7 +2,7 @@ use serde::{ser::SerializeSeq, Serialize};
 use serde_derive::Serialize;
 use thiserror::Error;
 
-use crate::{features::package::result::{PackageError, PackageOutput}, utils::{manifest::Manifest, pull::PullError}};
+use crate::{features::{bot::BotCmdError, package::result::{PackageError, PackageOutput}}, utils::{manifest::Manifest, pull::PullError}};
 
 pub type ProgramResult = Result<ProgramOutput, ProgramError>;
 
@@ -28,7 +28,10 @@ pub enum ProgramErrorKind {
     WSCreate(PullError),
 
     #[error("Unable to process package command: {0}")]
-    PKG(PackageError),
+    PKG(#[from] PackageError),
+
+    #[error("Unable to process create bot command: {0}")]
+    BOT(BotCmdError),
 
     #[error("Error with ROS command")]
 	ROSError,

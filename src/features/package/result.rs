@@ -16,7 +16,7 @@ pub enum PackageError {
     #[error("Unable to create a devcontainer")]
     DevcontainerError,
 
-    #[error("Unable to create the package")]
+    #[error("Unable to create the package: {0}")]
     SystemError(#[from] PopenError),
 
     #[error("Unable to create the package")]
