@@ -1,9 +1,16 @@
+use std::{fs::{File, OpenOptions}, io::{Read, Write}};
+
+use result::ManifestError;
+
 use super::pull;
 
+pub mod result;
+
 mod locator;
+mod local_locator;
 
 /// Artifacts of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug, Clone)]
 pub struct Artifacts {
     pub workspace: String,
     pub package: String,
@@ -12,12 +19,57 @@ pub struct Artifacts {
 }
 
 /// Manifest of a Flatboat Workspace
-#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug)]
+#[derive(serde_derive::Serialize, serde_derive::Deserialize, Debug, Clone)]
 pub struct Manifest {
     pub name: String,
     pub version: Option<String>,
     pub downloaded_from: Option<String>,
     pub artifacts: Artifacts,
+    pub ws_path: Option<String>,
+}
+
+impl Manifest {
+    /// Gets manifest from current workspace
+    pub fn new() -> Result<Self, ManifestError> {
+        let locations = local_locator::get_manifest_locations()?;
+
+        for loc in locations {
+            let file_result = File::open(loc.clone());
+
+            debug!("Searching for workspace at {}", loc.display().to_string());
+
+            if let Ok(mut manifest_file) = file_result {
+                let mut content = String::new();
+
+                debug!("Found workspace at {}", loc.display().to_string());
+
+                manifest_file.read_to_string(&mut content).ok().ok_or(ManifestError { desc: "Unable to read manifest file, check file permissions."})?;
+                let mut manifest: Manifest = toml::from_str(&content).ok().ok_or(ManifestError {
+                    desc: "Failed manifest deserialization, make sure flatboat.toml has the correct format and syntax."
+                })?;
+
+                let ws_path = loc.parent().expect("Should have a containing directory!");
+
+                manifest.ws_path = Some(ws_path.canonicalize().ok().ok_or(ManifestError {
+                    desc: "Unable to get workspace absolute path"
+                })?.display().to_string());
+
+                debug!("Setting WS Path to {}", manifest.clone().ws_path.expect("WS Path should be defined"));
+
+                let mut manifest_file = OpenOptions::new().write(true).truncate(true).open(loc).ok().ok_or(ManifestError {
+                    desc: "Unable to write flatoboat.toml manifest file"
+                })?;
+                
+                manifest_file.write(content.as_bytes()).ok().ok_or(ManifestError {
+                    desc: "Failed writting flatoboat.toml manifest file"
+                })?;
+
+                return Ok(manifest);
+            }
+        }
+
+        return Err(ManifestError { desc: "Manifest file flatboat.toml not found" });
+    }
 }
 
 impl pull::Pullable for Manifest {

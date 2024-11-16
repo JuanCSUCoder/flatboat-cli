@@ -1,11 +1,16 @@
+pub mod creation;
 pub mod result;
 
-use result::{PackageError, PackageErrorType, PackageOutput, PackageResult};
+mod pkg_build;
+
+use std::path::Path;
+
+use result::{PackageError, PackageOutput, PackageResult};
 
 use crate::{
     args::PackageSubcommands,
     output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind},
-    toolkits::devcontainer,
+    toolkits::{self, devcontainer}, utils::package_config::PackageConfig,
 };
 
 /// Handles all commands related with packages
@@ -19,7 +24,7 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) -> Result<ProgramOutput, Prog
     if let Ok(pkg_out) = pkg_res {
         return Ok(ProgramOutput { kind: ProgramOutputKind::PKGCreate(pkg_out), desc: "Package created successfully" });
     } else if let Err(pkg_err) = pkg_res {
-        return  Err(ProgramError { kind: ProgramErrorKind::PKGCreate(pkg_err), desc: "Failed package creation" });
+        return  Err(ProgramError { kind: ProgramErrorKind::PKG(pkg_err), desc: "Failed package creation" });
     } else {
         return Err(ProgramError { kind: ProgramErrorKind::UnknownError, desc: "" });
     }
@@ -28,46 +33,34 @@ pub fn handle_pkg_cmd(pkg_cmd: PackageSubcommands) -> Result<ProgramOutput, Prog
 /// Create a ROS Package Initialized with a Dockerfile for Building
 fn create_pkg(pkg_name: &String) -> PackageResult {
     // Start or check if workspace is started
-    let res = devcontainer::run_devcontainer().ok().ok_or(PackageError {
-        kind: PackageErrorType::DevcontainerError,
-        desc: "Unable to start current folder devcontainer. Command execution failed.",
-    })?;
+    let res = devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
     if res.success() {
-        // Exec Creation Command inside Devcontainer
-        let cmd = String::from("cd src && ros2 pkg create --build-type ament_python ") + pkg_name;
-        let res =
-            devcontainer::exec_in_shell(cmd).ok().ok_or(PackageError {
-                kind: PackageErrorType::PackageCreationError,
-                desc: "Unable to create ROS package. Command execution failed.",
-            })?;
-
-        if res.success() {
-            // TODO: Adds Docker File Configuration
-            return Ok(PackageOutput {
-                desc: "Successfull package creation"
-            });
-        } else {
-            return Err(PackageError {
-                kind: PackageErrorType::PackageCreationError,
-                desc: "Unable to create ROS package. Non zero exit status.",
-            });
-        }
+        return creation::create_package(pkg_name);
     } else {
-        return Err(PackageError {
-            kind: PackageErrorType::DevcontainerError,
-            desc: "Unable to start current folder devcontainer. Non zero exit status.",
-        });
+        return Err(PackageError::DevcontainerError);
     }
 }
 
 /// Builds a Docker Image for a ROS Package
-fn build_pkg(_pkg_name: &String) -> PackageResult {
-    // TODO: Start or check if workspace is started
+fn build_pkg(pkg_name: &str) -> PackageResult {
+    // Start or check if workspace is started
+    devcontainer::run_devcontainer().ok().ok_or(PackageError::DevcontainerError)?;
 
-    // TODO: Find Devcontainer Docker ID
+    // Get workspace and package paths
+    let ws = Path::new(".").canonicalize()?;
+    let pkg_path = ws.join("src").join(pkg_name);
+    let template = pkg_path.join("Dockerfile.jinja");
+    let dockerfile = pkg_path.join("Dockerfile");
+    let pkg_config = PackageConfig::from_path(&pkg_path)?;
 
-    // TODO: Build Docker Image for the Package with Tag
+    // Generate Dockerfile from template
+    toolkits::jinja::process_template(&template, &dockerfile, &pkg_config)?;
 
-    return Err(PackageError { kind: PackageErrorType::NotImplemented, desc: "Package build not implemented yet!" })
+    // Build package docker image
+    pkg_build::build_package(pkg_name, &ws, &dockerfile)?;
+
+    return Ok(PackageOutput {
+        desc: "Package image built successfully!",
+    });
 }
