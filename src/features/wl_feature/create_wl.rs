@@ -17,7 +17,12 @@ pub enum CreateWorkloadError {
   IOError(#[from] std::io::Error),
 
   #[error("Unable to pull wl image: {0}")]
-  PullError(#[from] PopenError)
+  PullError(#[from] PopenError),
+
+  #[error("Workload {wl_name} already exists")]
+  WorkloadAlreadyExists {
+    wl_name: String
+  },
 }
 
 /// Creates a wl in workspace
@@ -28,6 +33,11 @@ pub fn create_wl(wl_name: &str) -> Result<(), CreateWorkloadError> {
   let pkg_path = PathBuf::from(manifest.ws_path.ok_or(CreateWorkloadError::WorkspaceNotFound)?)
     .join("wl")
     .join(wl_name);
+
+  // Check if workload exists
+  if pkg_path.is_dir() {
+    return Err(CreateWorkloadError::WorkloadAlreadyExists { wl_name: wl_name.to_string() });
+  }
 
   // Moves inside the package direcctory
   std::fs::create_dir_all(&pkg_path)?;
