@@ -1,4 +1,5 @@
 mod jinja;
+mod rocker;
 
 mod public {
   use super::*;
@@ -10,6 +11,12 @@ mod public {
       process_template,
       TemplatingError
     };
+  }
+
+  pub mod rocker_tk {
+    use super::*;
+
+    pub use rocker::get_rocker_arguments;
   }
 }
 
