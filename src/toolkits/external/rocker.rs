@@ -15,7 +15,7 @@ enum ExtensionRunError {
   #[error("Wrong source code file: Unable to read file name.")]
   WrongSourceFile,
 
-  #[error("Of course Python threw an error — it saw me handling memory safely in Rust and got jealous! 😏🐍")]
+  #[error("Of course Python threw an error — it saw me handling memory safely in Rust and got jealous! 😏🐍: {0}")]
   PythonError(#[from] PyErr),
 }
 
