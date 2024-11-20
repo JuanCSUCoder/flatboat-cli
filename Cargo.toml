@@ -27,3 +27,8 @@ serde_json = "1.0.117"
 minijinja = "2.0.3"
 thiserror = "1.0.64"
 anyhow = "1.0.93"
+
+[dependencies.pyo3]
+version = "0.23.1"
+features = ["auto-initialize"]
+
