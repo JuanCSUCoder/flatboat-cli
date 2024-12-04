@@ -8,7 +8,10 @@ mod public {
       docker_tk,
       oras_tk,
     },
-    external::jinja_tk
+    external::{
+      jinja_tk,
+      rocker_tk,
+    }
   };
 
   pub mod devcontainer {
@@ -41,6 +44,15 @@ mod public {
       TemplatingError,
     };
   }
+
+  pub mod rocker {
+    use super::*;
+
+    pub use rocker_tk::{
+      get_dockerfile,
+      get_rocker_arguments,
+    };
+  }
 }
 
 pub use public::{
@@ -48,4 +60,5 @@ pub use public::{
   oras,
   docker,
   jinja,
+  rocker,
 };

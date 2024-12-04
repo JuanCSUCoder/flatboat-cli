@@ -16,8 +16,14 @@ mod public {
   pub mod rocker_tk {
     use super::*;
 
-    pub use rocker::get_rocker_arguments;
+    pub use rocker::{
+      get_rocker_arguments,
+      get_dockerfile,
+    };
   }
 }
 
-pub use public::jinja_tk;
+pub use public::{
+  jinja_tk,
+  rocker_tk,
+};

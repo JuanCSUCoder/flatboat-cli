@@ -38,3 +38,8 @@ fn runs_rocker_extension(ext_path: &Path) -> Result<String, ExtensionRunError> {
 pub fn get_rocker_arguments() {
   
 }
+
+/// Generates rocker Dockerfile to run the devcontainer
+pub fn get_dockerfile() {
+  
+}
