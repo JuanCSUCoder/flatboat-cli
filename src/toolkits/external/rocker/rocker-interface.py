@@ -11,7 +11,7 @@ import rocker.rmw_extension
 import rocker.ssh_extension
 import rocker.volume_extension
 
-# Open Robotics Topological Extension Sorter - APACHE 2.0
+## BEGIN Open Robotics Topological Extension Sorter - APACHE 2.0 ##
 
 def sort_extensions(extensions, cli_args=""):
   def topological_sort(source: typing.Dict[str, typing.Set[str]]):
@@ -46,6 +46,8 @@ def sort_extensions(extensions, cli_args=""):
   return active_extension_list
 #end def
 
+## END Open Robotics Topological Extension Sorter - APACHE 2.0 ##
+
 # 1. Get Default Extensions Modules
 extension_modules = [rocker.extensions, rocker.git_extension, rocker.nvidia_extension, rocker.rmw_extension, rocker.ssh_extension, rocker.volume_extension]
 
@@ -62,19 +64,10 @@ for extension_mod in extension_modules:
   #end for
 #end for
 
-# print("Unsorted Extensions: ", extensions.keys())
-
 # TODO: 3. Filter Inactive or Blacklisted Extensions
 
-# print("Active Extensions: ", extensions)
-
-def generate_dockerfile(extensions, base_image):
-    extensions = sort_extensions(extensions_dict)
-
-    args_dict = {
-       'user': True,
-       'user_override_name': 'flatboat'
-    }
+def generate_dockerfile(extensions, args_dict, base_image):
+    extensions = sort_extensions(extensions_dict, cli_args=args_dict)
 
     dockerfile_str = ''
     # Preamble snippets
