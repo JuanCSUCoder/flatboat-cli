@@ -62,16 +62,21 @@ for extension_mod in extension_modules:
   #end for
 #end for
 
-print("Unsorted Extensions: ", extensions)
+# print("Unsorted Extensions: ", extensions.keys())
 
 # TODO: 3. Filter Inactive or Blacklisted Extensions
 
 # 4. Sort Extensions By Dependency
 extensions = sort_extensions(extensions)
 
-print("Active Extensions: ", extensions)
+# print("Active Extensions: ", extensions)
 
-def generate_dockerfile(extensions, args_dict, base_image):
+def generate_dockerfile(extensions, base_image):
+    args_dict = {
+       user: True,
+       user_override_name: "flatboat"
+    }
+
     dockerfile_str = ''
     # Preamble snippets
     for el in extensions:
@@ -88,7 +93,7 @@ def generate_dockerfile(extensions, args_dict, base_image):
         if 'user_override_name' in args_dict and args_dict['user_override_name']:
             username = args_dict['user_override_name']
         else:
-            username = get_user_name()
+            username = "flatboat"
         dockerfile_str += f'USER {username}\n'
     # USER snippets
     for el in extensions:
