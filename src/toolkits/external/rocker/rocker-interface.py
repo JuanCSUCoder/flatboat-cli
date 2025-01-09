@@ -52,12 +52,12 @@ extension_modules = [rocker.extensions, rocker.git_extension, rocker.nvidia_exte
 
 # 2. Get Extensions Classes
 print("##### DETECTING EXTENSIONS #####")
-extensions = {}
+extensions_dict = {}
 for extension_mod in extension_modules:
   for name, cls in inspect.getmembers(extension_mod):
     if inspect.isclass(cls) and [b.__name__ for b in cls.__bases__][0] == 'RockerExtension':
       print("Extension Class: ", name, " Inherits: ", [b.__name__ for b in cls.__bases__])
-      extensions[name] = cls()
+      extensions_dict[name] = cls()
     #end if
   #end for
 #end for
@@ -66,15 +66,14 @@ for extension_mod in extension_modules:
 
 # TODO: 3. Filter Inactive or Blacklisted Extensions
 
-# 4. Sort Extensions By Dependency
-extensions = sort_extensions(extensions)
-
 # print("Active Extensions: ", extensions)
 
 def generate_dockerfile(extensions, base_image):
+    extensions = sort_extensions(extensions_dict)
+
     args_dict = {
-       user: True,
-       user_override_name: "flatboat"
+       'user': True,
+       'user_override_name': 'flatboat'
     }
 
     dockerfile_str = ''
