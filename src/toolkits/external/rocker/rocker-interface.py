@@ -49,9 +49,6 @@ def sort_extensions(extensions, cli_args=""):
 ## END Open Robotics Topological Extension Sorter - APACHE 2.0 ##
 
 def get_extensions(extensions_modules: list, args_dict: dict):
-  """
-  
-  """
   # 1. Get Default Extensions Modules
   extension_mods = [rocker.extensions, rocker.git_extension, rocker.nvidia_extension, rocker.rmw_extension, rocker.ssh_extension, rocker.volume_extension] + extensions_modules
 
@@ -110,6 +107,12 @@ def generate_dockerfile(extensions_modules: list, args_dict: dict, base_image: s
       dockerfile_str += '# User Snippet from extension [%s]\n' % el.get_name()
       dockerfile_str += el.get_user_snippet(args_dict) + '\n'
   return dockerfile_str
+#end def
 
 def generate_parameters():
   pass
+#end def
+
+if __name__ == "__main__":
+  dfs = generate_dockerfile([], {}, '')
+  print(dfs)
