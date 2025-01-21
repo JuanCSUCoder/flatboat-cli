@@ -114,5 +114,5 @@ def generate_parameters():
 #end def
 
 if __name__ == "__main__":
-  dfs = generate_dockerfile([], {}, '')
+  dfs = generate_dockerfile([], {'base_image': 'ubuntu:22.04'}, 'ubuntu:22.04')
   print(dfs)
