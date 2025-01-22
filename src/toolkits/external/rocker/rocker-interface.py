@@ -3,6 +3,7 @@ import typing
 import rocker
 
 # Default Extensions Imports
+import rocker.core
 import rocker.extensions
 import rocker.git_extension
 import rocker.nvidia_extension
@@ -68,11 +69,8 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   return sort_extensions(extensions_dict, cli_args=args_dict)
 #end def
 
-def generate_dockerfile(extensions_modules: list, args_dict: dict):
+def generate_dockerfile(extensions: list, args_dict: dict):
   base_image = args_dict['base_image']
-
-  # 1. Get User Selected Extensions
-  extensions = get_extensions(extensions_modules, args_dict)
 
   dockerfile_str = ''
   # 2. Generate Preamble snippets
@@ -109,9 +107,7 @@ def generate_dockerfile(extensions_modules: list, args_dict: dict):
   return dockerfile_str
 #end def
 
-def generate_parameters(extension_modules: list, args_dict: dict):
-  extensions = get_extensions(extension_modules, args_dict)
-
+def generate_parameters(extensions: list, args_dict: dict):
   docker_args = ''
 
   for e in extensions:
@@ -119,6 +115,26 @@ def generate_parameters(extension_modules: list, args_dict: dict):
   #end for
 
   return docker_args.split()
+#end def
+
+def setup_environment(extensions_modules: list, args_dict: dict) -> list[rocker.core.RockerExtension]:
+  """
+  Setups environment for all extensions, and returns the configurated extensions as a list.
+  """
+  # 1. Get the active extensions
+  extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
+
+  # 2. Configure all preconditions on the environment
+  for e in extensions:
+    e.precondition_environment()
+  #end for
+
+  # 3. Validate the environment
+  for e in extensions:
+    e.validate_environment()
+  #end for
+
+  return extensions
 #end def
 
 if __name__ == "__main__":
@@ -138,9 +154,11 @@ if __name__ == "__main__":
     'pulse': True,
   }
 
-  dfs = generate_dockerfile(ext_mods, args)
+  extensions = setup_environment(ext_mods, args)
+
+  dfs = generate_dockerfile(extensions, args)
   print(" ==================================== DOCKERFILE ===================================")
   print(dfs)
   print(" ======================================= ARGS ======================================")
-  args = generate_parameters(ext_mods, args)
+  args = generate_parameters(extensions, args)
   print(args)
