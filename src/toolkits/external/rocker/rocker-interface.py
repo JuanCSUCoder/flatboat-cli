@@ -126,12 +126,12 @@ def setup_environment(extensions_modules: list, args_dict: dict) -> list[rocker.
 
   # 2. Configure all preconditions on the environment
   for e in extensions:
-    e.precondition_environment()
+    e.precondition_environment(args_dict)
   #end for
 
   # 3. Validate the environment
   for e in extensions:
-    e.validate_environment()
+    e.validate_environment(args_dict)
   #end for
 
   return extensions
