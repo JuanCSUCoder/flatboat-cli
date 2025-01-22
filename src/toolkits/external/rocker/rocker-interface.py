@@ -118,13 +118,29 @@ def generate_parameters(extension_modules: list, args_dict: dict):
     docker_args += e.get_docker_args(args_dict)
   #end for
 
-  return docker_args
+  return docker_args.split()
 #end def
 
 if __name__ == "__main__":
-  dfs = generate_dockerfile([], {'base_image': 'ubuntu:22.04'})
+  ext_mods = []
+  args = {
+    'base_image': 'ubuntu:22.04',
+
+    'x11': True,
+
+    'nvidia': True,
+    'cuda': True,
+
+    'git': True,
+    'user': True,
+    'network': 'host',
+    'privileged': True,
+    'pulse': True,
+  }
+
+  dfs = generate_dockerfile(ext_mods, args)
   print(" ==================================== DOCKERFILE ===================================")
   print(dfs)
   print(" ======================================= ARGS ======================================")
-  args = generate_parameters([], {'base_image': 'ubuntu:22.04'})
+  args = generate_parameters(ext_mods, args)
   print(args)
