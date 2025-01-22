@@ -70,7 +70,9 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   return sort_extensions(extensions_dict, cli_args=args_dict)
 #end def
 
-def generate_dockerfile(extensions_modules: list, args_dict: dict, base_image: str):
+def generate_dockerfile(extensions_modules: list, args_dict: dict):
+  base_image = args_dict['base_image']
+
   # 1. Get User Selected Extensions
   extensions = get_extensions(extensions_modules, args_dict)
 
@@ -109,10 +111,22 @@ def generate_dockerfile(extensions_modules: list, args_dict: dict, base_image: s
   return dockerfile_str
 #end def
 
-def generate_parameters():
-  pass
+def generate_parameters(extension_modules: list, args_dict: dict):
+  extensions = get_extensions(extension_modules, args_dict)
+
+  docker_args = ''
+
+  for e in extensions:
+    docker_args += e.get_docker_args(args_dict)
+  #end for
+
+  return docker_args
 #end def
 
 if __name__ == "__main__":
-  dfs = generate_dockerfile([], {'base_image': 'ubuntu:22.04'}, 'ubuntu:22.04')
+  dfs = generate_dockerfile([], {'base_image': 'ubuntu:22.04'})
+  print(" ==================================== DOCKERFILE ===================================")
   print(dfs)
+  print(" ======================================= ARGS ======================================")
+  args = generate_parameters([], {'base_image': 'ubuntu:22.04'})
+  print(args)
