@@ -1,6 +1,7 @@
 import inspect
 import typing
 import rocker
+import os
 
 # Default Extensions Imports
 import rocker.core
@@ -162,3 +163,4 @@ if __name__ == "__main__":
   print(" ======================================= ARGS ======================================")
   args = generate_parameters(extensions, args)
   print(args)
+  input('')
