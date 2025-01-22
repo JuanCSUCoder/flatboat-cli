@@ -52,19 +52,17 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   # 1. Get Default Extensions Modules
   extension_mods = [rocker.extensions, rocker.git_extension, rocker.nvidia_extension, rocker.rmw_extension, rocker.ssh_extension, rocker.volume_extension] + extensions_modules
 
-  # 2. Get Extensions Classes
+  # 2. Get Filtered Extensions Objects
   print("##### DETECTING EXTENSIONS #####")
   extensions_dict = {}
   for extension_mod in extension_mods:
     for name, cls in inspect.getmembers(extension_mod):
-      if inspect.isclass(cls) and [b.__name__ for b in cls.__bases__][0] == 'RockerExtension':
+      if inspect.isclass(cls) and [b.__name__ for b in cls.__bases__][0] == 'RockerExtension' and cls.check_args_for_activation(args_dict):
         print("Extension Class: ", name, " Inherits: ", [b.__name__ for b in cls.__bases__])
         extensions_dict[name] = cls()
       #end if
     #end for
   #end for
-
-  # TODO: 3. Filter Inactive or Blacklisted Extensions
 
   # 4. Sort Extensions
   return sort_extensions(extensions_dict, cli_args=args_dict)
