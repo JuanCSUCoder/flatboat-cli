@@ -1,34 +1,27 @@
-use std::{ffi::{CString, NulError}, os::unix::ffi::OsStrExt, path::Path};
-use pyo3::{types::PyModule, PyErr, Python};
+use std::{any::Any, collections::HashMap, ffi::CStr};
+
 use pyo3_ffi::c_str;
 use thiserror::Error;
+use pyo3::{types::PyModule, Python, PyErr};
 
-#[derive(Error, Debug)]
-enum ExtensionRunError {
-  #[error("IO Error: Extension file not found or inaccesible: {0}")]
-  ExtensionFileNotFound(#[from] std::io::Error),
+const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker-interface.py"));
 
-  #[error("Null byte error: A null byte has been found on extension source code. Unable to parse: {0}")]
-  NullByteFound(#[from] NulError),
-
-  #[error("Wrong source code file: Unable to read file name.")]
-  WrongSourceFile,
-
-  #[error("Of course Python threw an error — it saw me handling memory safely in Rust and got jealous! 😏🐍: {0}")]
-  PythonError(#[from] PyErr),
+#[derive(Error, Debug)] 
+enum RockerSetupError {
+  #[error("Failed loading Flatboat-Rocker Interface. PLEASE REPORT THIS BUG IN GITHUB.")]
+  ErrorLoadingInterface(#[from] PyErr),
 }
 
-fn runs_rocker_extension(ext_path: &Path) -> Result<String, ExtensionRunError> {
-  let ext_code = std::fs::read_to_string(ext_path)?;
-  let ext_filename = ext_path.file_name().ok_or(ExtensionRunError::WrongSourceFile)?.as_bytes();
+/// Setups and mantains the required environment for running a Rocker container
+pub async fn setup_environment(extension_modules: Vec<String>, arguments: HashMap<String, Box<dyn Any>>) -> Result<(), RockerSetupError> {
+  Python::with_gil(|py| {
+    let function = PyModule::from_code(
+      py,
+      ROCKER_INTERFACE_SRC,
+      c_str!("rocker-interface.py"),
+      c_str!("rocker_interface")
+    )?;
 
-  return Python::with_gil(|py| {
-    let ext = 
-      PyModule::from_code(py, 
-        CString::new(ext_code)?.as_c_str(), 
-        CString::new(ext_filename)?.as_c_str(), c_str!("rocker_extension")
-      )?;
-
-    Ok(String::new())
-  });
+    Ok(())
+  })
 }
