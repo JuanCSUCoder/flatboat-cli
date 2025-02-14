@@ -70,8 +70,12 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   return sort_extensions(extensions_dict, cli_args=args_dict)
 #end def
 
-def generate_dockerfile(extensions: list, args_dict: dict):
+def generate_dockerfile(extensions_names: list[str], args_dict: dict):
   base_image = args_dict['base_image']
+
+  # 1. Get the active extensions
+  extensions_modules = flatboat_ext_loader(extensions_names)
+  extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
 
   dockerfile_str = ''
   # 2. Generate Preamble snippets
@@ -108,8 +112,12 @@ def generate_dockerfile(extensions: list, args_dict: dict):
   return dockerfile_str
 #end def
 
-def generate_parameters(extensions: list, args_dict: dict):
+def generate_parameters(extensions_names: list[str], args_dict: dict):
   docker_args = ''
+
+  # 1. Get the active extensions
+  extensions_modules = flatboat_ext_loader(extensions_names)
+  extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
 
   for e in extensions:
     docker_args += e.get_docker_args(args_dict)
@@ -118,11 +126,12 @@ def generate_parameters(extensions: list, args_dict: dict):
   return docker_args.split()
 #end def
 
-def setup_environment(extensions_modules: list, args_dict: dict) -> list[rocker.core.RockerExtension]:
+def setup_environment(extensions_names: list[str], args_dict: dict) -> list[rocker.core.RockerExtension]:
   """
   Setups environment for all extensions, and returns the configurated extensions as a list.
   """
   # 1. Get the active extensions
+  extensions_modules = flatboat_ext_loader(extensions_names)
   extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
 
   # 2. Configure all preconditions on the environment
@@ -136,6 +145,13 @@ def setup_environment(extensions_modules: list, args_dict: dict) -> list[rocker.
   #end for
 
   return extensions
+#end def
+
+def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerExtension]:
+  """
+  Loads flatboat rocker extensions using it's names
+  """
+  pass
 #end def
 
 if __name__ == "__main__":
