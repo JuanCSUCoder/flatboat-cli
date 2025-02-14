@@ -70,24 +70,20 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   return sort_extensions(extensions_dict, cli_args=args_dict)
 #end def
 
-def generate_dockerfile(extensions_names: list[str], args_dict: dict):
+def generate_dockerfile(extensions: list[rocker.core.RockerExtension], args_dict: dict):
   base_image = args_dict['base_image']
 
-  # 1. Get the active extensions
-  extensions_modules = flatboat_ext_loader(extensions_names)
-  extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
-
   dockerfile_str = ''
-  # 2. Generate Preamble snippets
+  # 1. Generate Preamble snippets
   for el in extensions:
     dockerfile_str += '# Preamble from extension [%s]\n' % el.get_name()
     dockerfile_str += el.get_preamble(args_dict) + '\n'
   #end for
 
-  # 3. Start from base_image
+  # 2. Start from base_image
   dockerfile_str += '\nFROM %s\n' % base_image
 
-  # 4. Generate ROOT snippets
+  # 3. Generate ROOT snippets
   dockerfile_str += 'USER root\n'
   for el in extensions:
     dockerfile_str += '# Snippet from extension [%s]\n' % el.get_name()
@@ -95,7 +91,7 @@ def generate_dockerfile(extensions_names: list[str], args_dict: dict):
   #end for
 
 
-  # 5. Set USER if user extension activated
+  # 4. Set USER if user extension activated
   if 'user' in args_dict and args_dict['user']:
     if 'user_override_name' in args_dict and args_dict['user_override_name']:
       username = args_dict['user_override_name']
@@ -105,19 +101,15 @@ def generate_dockerfile(extensions_names: list[str], args_dict: dict):
     dockerfile_str += f'USER {username}\n'
   #end if
 
-  # 6. Generate USER snippets
+  # 5. Generate USER snippets
   for el in extensions:
       dockerfile_str += '# User Snippet from extension [%s]\n' % el.get_name()
       dockerfile_str += el.get_user_snippet(args_dict) + '\n'
   return dockerfile_str
 #end def
 
-def generate_parameters(extensions_names: list[str], args_dict: dict):
+def generate_parameters(extensions: list[rocker.core.RockerExtension], args_dict: dict):
   docker_args = ''
-
-  # 1. Get the active extensions
-  extensions_modules = flatboat_ext_loader(extensions_names)
-  extensions: list[rocker.core.RockerExtension] = get_extensions(extensions_modules, args_dict)
 
   for e in extensions:
     docker_args += e.get_docker_args(args_dict)
