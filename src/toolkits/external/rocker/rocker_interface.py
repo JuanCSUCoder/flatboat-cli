@@ -151,7 +151,8 @@ def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerE
   """
   Loads flatboat rocker extensions using it's names
   """
-  pass
+  # TODO: Implement
+  return []
 #end def
 
 if __name__ == "__main__":
