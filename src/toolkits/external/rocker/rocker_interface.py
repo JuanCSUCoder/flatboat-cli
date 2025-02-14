@@ -147,6 +147,20 @@ def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerE
   return []
 #end def
 
+def get_rocker_config(additional_extensions: list[str], args: dict) -> tuple[str, str]: 
+  # 1. Setup Rocker Environment and Extensions
+  extensions = setup_environment(ext_mods, args)
+
+  # 2. Generate Dockerfile
+  df = generate_dockerfile(extensions, args)
+  print(" ==================================== DOCKERFILE ===================================")
+  # 3. Generate Parameters
+  print(" ======================================= ARGS ======================================")
+  args = generate_parameters(extensions, args)
+  
+  return (df, args)
+#end def
+
 if __name__ == "__main__":
   ext_mods = []
   args = {
@@ -164,12 +178,8 @@ if __name__ == "__main__":
     'pulse': True,
   }
 
-  extensions = setup_environment(ext_mods, args)
-
-  dfs = generate_dockerfile(extensions, args)
-  print(" ==================================== DOCKERFILE ===================================")
-  print(dfs)
-  print(" ======================================= ARGS ======================================")
-  args = generate_parameters(extensions, args)
+  (df, args) = get_rocker_config(ext_mods, args)
+  print(df)
   print(args)
-  input('')
+  input(' ')
+#end if
