@@ -1,8 +1,9 @@
-use std::{any::Any, collections::HashMap, ffi::CStr};
+use std::{any::Any, ffi::CStr};
 
 use pyo3_ffi::c_str;
+use serde_json::Map;
 use thiserror::Error;
-use pyo3::{types::{PyAnyMethods, PyModule, PyTuple}, Py, PyAny, PyErr, Python};
+use pyo3::{types::{PyAnyMethods, PyDict, PyModule}, Py, PyAny, PyErr, Python};
 
 const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py"));
 
@@ -13,7 +14,7 @@ enum RockerSetupError {
 }
 
 /// Setups and mantains the required environment for running a Rocker container
-pub async fn setup_environment(extension_modules: Vec<String>, arguments: HashMap<String, Box<dyn Any>>) -> Result<(), RockerSetupError> {
+pub async fn setup_environment(extension_modules: Vec<String>, arguments: Map<String, Box<dyn Any>>) -> Result<(), RockerSetupError> {
   Python::with_gil(|py| {
     let function: Py<PyAny> = PyModule::from_code(
       py,
@@ -21,10 +22,10 @@ pub async fn setup_environment(extension_modules: Vec<String>, arguments: HashMa
       c_str!("rocker_interface.py"),
       c_str!("rocker_interface")
     )?
-    .getattr("setup_environment")?
+    .getattr("get_rocker_config")?
     .into();
 
-    let args = (extension_modules, arguments);
+    let args = (extension_modules, PyDict::from(arguments));
 
     function.call1(py, args)?;
 
