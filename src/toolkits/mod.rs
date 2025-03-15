@@ -48,10 +48,7 @@ mod public {
   pub mod rocker {
     use super::*;
 
-    pub use rocker_tk::{
-      get_dockerfile,
-      get_rocker_arguments,
-    };
+    pub use rocker_tk::get_rocker_config;
   }
 }
 

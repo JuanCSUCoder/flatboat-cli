@@ -15,11 +15,7 @@ mod public {
 
   pub mod rocker_tk {
     use super::*;
-
-    pub use rocker::{
-      get_rocker_arguments,
-      get_dockerfile,
-    };
+    pub use rocker::get_rocker_config;
   }
 }
 
