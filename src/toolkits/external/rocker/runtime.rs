@@ -4,16 +4,18 @@ use pyo3_ffi::{c_str, PyErr_BadArgument};
 use thiserror::Error;
 use pyo3::{types::{PyAnyMethods, PyDict, PyInt, PyModule, PyString}, Bound, IntoPyObject, Py, PyAny, PyErr, Python};
 
+use super::ValidMap;
+
 const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py"));
 
 #[derive(Error, Debug)] 
-enum RockerSetupError {
+pub enum RockerSetupError {
   #[error("Failed loading Flatboat-Rocker Interface. PLEASE REPORT THIS BUG IN GITHUB.")]
   ErrorLoadingInterface(#[from] PyErr),
 }
 
 /// Setups and mantains the required environment for running a Rocker container
-pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ) -> Result<(), RockerSetupError> {
+pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), RockerSetupError> {
   Python::with_gil(|py| {
     let function: Py<PyAny> = PyModule::from_code(
       py,
