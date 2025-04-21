@@ -33,3 +33,26 @@ impl ValidMap {
       Self(map)
     }
 }
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_valid_map() -> Result<(), PyErr> {
+        let mut map = Map::new();
+        map.insert("key1".to_string(), serde_json::Value::String("value1".to_string()));
+        map.insert("key2".to_string(), serde_json::Value::String("value2".to_string()));
+
+        let valid_map = ValidMap::from(map);
+
+        return Python::with_gil(|py| {
+            let py_dict = valid_map.into_pyobject(py)?;
+
+            assert_eq!(py_dict.len()?, 2);
+            assert_eq!(py_dict.get_item("key1")?.extract::<String>()?, "value1");
+            assert_eq!(py_dict.get_item("key2")?.extract::<String>()?, "value2");
+
+            return Ok(());
+        });
+    }
+}
