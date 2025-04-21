@@ -15,7 +15,10 @@ mod public {
 
   pub mod rocker_tk {
     use super::*;
-    pub use rocker::get_rocker_config;
+    pub use rocker::{
+      get_rocker_config,
+      ValidMap,
+    };
   }
 }
 
