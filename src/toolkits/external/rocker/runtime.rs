@@ -12,6 +12,9 @@ const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py")
 pub enum RockerSetupError {
   #[error("Failed loading Flatboat-Rocker Interface. PLEASE REPORT THIS BUG IN GITHUB.")]
   ErrorLoadingInterface(#[from] PyErr),
+
+  #[error("Test error. PLEASE REPORT THIS BUG IN GITHUB.")]
+  TestError,
 }
 
 /// Setups and mantains the required environment for running a Rocker container
@@ -34,4 +37,24 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
   })
 }
 
+mod tests {
+  use super::*;
+  use crate::toolkits::external::rocker::serde_pyo3::ValidMap;
+  use serde_json::json;
+
+  #[tokio::test]
+  async fn test_get_rocker_config() -> Result<(), RockerSetupError> {
+    let extension_modules = vec!["rocker".to_string()];
+    let json = json!({
+      "key1": "value1",
+      "key2": "value2"
+    });
+    let obj = json.as_object().ok_or(RockerSetupError::TestError)?;
+    let arguments = ValidMap::from(obj.clone());
+
+    get_rocker_config(extension_modules, arguments).await?;
+
+    Ok(())
+  }
+}
 
