@@ -61,14 +61,16 @@ mod tests {
   async fn test_python_environment() -> Result<(), PyErr> {
     Python::with_gil(|py| {
       py.run(c_str!(r#"
-        import sys
-        print("SYS.VERSION: ", sys.version)
-        print("SYS.EXEC: ", sys.executable)
-        pritn("SYS.PATH: ", sys.path)
+import sys
+print("SYS.VERSION: ", sys.version)
+print("SYS.EXEC: ", sys.executable)
+print("SYS.PATH: ", sys.path)
+
+import rocker
+print("ROCKER.READY: ", rocker.__name__)
       "#), None, None)?;
 
       return Ok(());
     })
   }
 }
-
