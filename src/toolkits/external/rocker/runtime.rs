@@ -56,5 +56,19 @@ mod tests {
 
     Ok(())
   }
+
+  #[tokio::test]
+  async fn test_python_environment() -> Result<(), PyErr> {
+    Python::with_gil(|py| {
+      py.run(c_str!(r#"
+        import sys
+        print("SYS.VERSION: ", sys.version)
+        print("SYS.EXEC: ", sys.executable)
+        pritn("SYS.PATH: ", sys.path)
+      "#), None, None)?;
+
+      return Ok(());
+    })
+  }
 }
 
