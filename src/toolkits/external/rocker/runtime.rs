@@ -19,9 +19,9 @@ pub enum RockerSetupError {
 
 /// Setups and mantains the required environment for running a Rocker container
 pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), PyErr> {
-  info!("Generating rocker config...");
+  debug!("Generating rocker config...");
   Python::with_gil(|py| {
-    info!("Started global interpreter lock!");
+    debug!("Started global interpreter lock!");
 
     let rocker_module = PyModule::from_code(
       py,
@@ -30,17 +30,17 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
       c_str!("rocker_interface")
     )?;
 
-    info!("Rocker interface loaded");
+    debug!("Rocker interface loaded");
 
     let function = rocker_module.getattr("get_rocker_config")?;
 
-    info!("Preparing to generate rocker config with: {:?}", function);
+    debug!("Preparing to generate rocker config with: {:?}", function);
 
     let args = (extension_modules, arguments);
 
     function.call1(args)?;
 
-    info!("Rocker Config Generated!");
+    debug!("Rocker Config Generated!");
 
     Ok(())
   })
