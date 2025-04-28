@@ -162,18 +162,24 @@ def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerE
 print("Flatboat extension loader loaded")
 
 def get_rocker_config(additional_extensions: list[str], args: dict) -> tuple[str, str]: 
-  # 1. Setup Rocker Environment and Extensions
-  print(" ==================================== EXTENSIONS ====================================")
-  extensions = setup_environment(additional_extensions, args)
+  try:
+    # 1. Setup Rocker Environment and Extensions
+    print(" ==================================== EXTENSIONS ====================================")
+    extensions = setup_environment(additional_extensions, args)
 
-  # 2. Generate Dockerfile
-  print(" ==================================== DOCKERFILE ===================================")
-  df = generate_dockerfile(extensions, args)
-  # 3. Generate Parameters
-  print(" ======================================= ARGS ======================================")
-  args = generate_parameters(extensions, args)
-  
-  return (df, args)
+    # 2. Generate Dockerfile
+    print(" ==================================== DOCKERFILE ===================================")
+    df = generate_dockerfile(extensions, args)
+    # 3. Generate Parameters
+    print(" ======================================= ARGS ======================================")
+    args = generate_parameters(extensions, args)
+
+    return (df, args)
+  except Exception as error:
+    print("Python Error: ", error)
+
+    return ("", "")
+
 #end def
 
 print("Engine loaded")
