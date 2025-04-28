@@ -149,7 +149,7 @@ def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerE
 
 def get_rocker_config(additional_extensions: list[str], args: dict) -> tuple[str, str]: 
   # 1. Setup Rocker Environment and Extensions
-  extensions = setup_environment(ext_mods, args)
+  extensions = setup_environment(additional_extensions, args)
 
   # 2. Generate Dockerfile
   df = generate_dockerfile(extensions, args)
