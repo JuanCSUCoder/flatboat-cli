@@ -2,7 +2,7 @@ use std::ffi::CStr;
 
 use pyo3_ffi::c_str;
 use thiserror::Error;
-use pyo3::{types::{PyAnyMethods, PyModule}, Py, PyAny, PyErr, Python};
+use pyo3::{types::{PyAnyMethods, PyModule}, PyErr, Python};
 
 use super::ValidMap;
 
@@ -19,7 +19,10 @@ pub enum RockerSetupError {
 
 /// Setups and mantains the required environment for running a Rocker container
 pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), PyErr> {
+  info!("Generating rocker config...");
   Python::with_gil(|py| {
+    info!("Started global interpreter lock!");
+
     let rocker_module = PyModule::from_code(
       py,
       ROCKER_INTERFACE_SRC,
@@ -49,7 +52,7 @@ mod tests {
 
   #[tokio::test]
   async fn test_get_rocker_config() -> Result<(), PyErr> {
-    pretty_env_logger::init();
+    crate::core::helpers::setup_logging();
     let extension_modules = vec!["rocker".to_string()];
     let json = json!({
       "base_image": "ubuntu:22.04",
