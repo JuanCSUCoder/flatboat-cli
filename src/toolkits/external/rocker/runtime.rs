@@ -1,8 +1,8 @@
-use std::{any::Any, ffi::CStr};
+use std::ffi::CStr;
 
-use pyo3_ffi::{c_str, PyErr_BadArgument};
+use pyo3_ffi::c_str;
 use thiserror::Error;
-use pyo3::{types::{PyAnyMethods, PyDict, PyInt, PyModule, PyString}, Bound, IntoPyObject, Py, PyAny, PyErr, Python};
+use pyo3::{types::{PyAnyMethods, PyModule}, Py, PyAny, PyErr, Python};
 
 use super::ValidMap;
 
@@ -18,20 +18,24 @@ pub enum RockerSetupError {
 }
 
 /// Setups and mantains the required environment for running a Rocker container
-pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), RockerSetupError> {
+pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), PyErr> {
   Python::with_gil(|py| {
-    let function: Py<PyAny> = PyModule::from_code(
+    let rocker_module = PyModule::from_code(
       py,
       ROCKER_INTERFACE_SRC,
       c_str!("rocker_interface.py"),
       c_str!("rocker_interface")
-    )?
-    .getattr("get_rocker_config")?
-    .into();
+    )?;
+
+    info!("Rocker interface loaded");
+
+    let function = rocker_module.getattr("get_rocker_config")?;
+
+    info!("Preparing to generate rocker config");
 
     let args = (extension_modules, arguments);
 
-    function.call1(py, args)?;
+    function.call1(args)?;
 
     Ok(())
   })
@@ -40,16 +44,28 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
 mod tests {
   use super::*;
   use crate::toolkits::external::rocker::serde_pyo3::ValidMap;
+  use pyo3::exceptions::PyValueError;
   use serde_json::json;
 
   #[tokio::test]
-  async fn test_get_rocker_config() -> Result<(), RockerSetupError> {
+  async fn test_get_rocker_config() -> Result<(), PyErr> {
+    pretty_env_logger::init();
     let extension_modules = vec!["rocker".to_string()];
     let json = json!({
-      "key1": "value1",
-      "key2": "value2"
+      "base_image": "ubuntu:22.04",
+
+      "x11": true,
+
+      "nvidia": true,
+      "cuda": true,
+
+      "git": true,
+      "user": true,
+      "network": "host",
+      "privileged": true,
+      "pulse": true,
     });
-    let obj = json.as_object().ok_or(RockerSetupError::TestError)?;
+    let obj = json.as_object().ok_or(PyErr::new::<PyValueError, _>("Error"))?;
     let arguments = ValidMap::from(obj.clone());
 
     get_rocker_config(extension_modules, arguments).await?;
