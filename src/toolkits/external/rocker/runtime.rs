@@ -34,11 +34,13 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
 
     let function = rocker_module.getattr("get_rocker_config")?;
 
-    info!("Preparing to generate rocker config");
+    info!("Preparing to generate rocker config with: {:?}", function);
 
     let args = (extension_modules, arguments);
 
     function.call1(args)?;
+
+    info!("Rocker Config Generated!");
 
     Ok(())
   })
@@ -53,7 +55,7 @@ mod tests {
   #[tokio::test]
   async fn test_get_rocker_config() -> Result<(), PyErr> {
     crate::core::helpers::setup_logging();
-    let extension_modules = vec!["rocker".to_string()];
+    let extension_modules: Vec<String> = Vec::new();
     let json = json!({
       "base_image": "ubuntu:22.04",
 
