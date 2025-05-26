@@ -13,7 +13,7 @@ import rocker.rmw_extension
 import rocker.ssh_extension
 import rocker.volume_extension
 
-print("Modules loaded")
+# print("Modules loaded")
 
 ## BEGIN Open Robotics Topological Extension Sorter - APACHE 2.0 ##
 
@@ -52,19 +52,19 @@ def sort_extensions(extensions, cli_args=""):
 
 ## END Open Robotics Topological Extension Sorter - APACHE 2.0 ##
 
-print("Sorting loaded")
+# print("Sorting loaded")
 
 def get_extensions(extensions_modules: list, args_dict: dict):
   # 1. Get Default Extensions Modules
   extension_mods = [rocker.extensions, rocker.git_extension, rocker.nvidia_extension, rocker.rmw_extension, rocker.ssh_extension, rocker.volume_extension] + extensions_modules
 
   # 2. Get Filtered Extensions Objects
-  print("##### DETECTING EXTENSIONS #####")
+  # print("##### DETECTING EXTENSIONS #####")
   extensions_dict = {}
   for extension_mod in extension_mods:
     for name, cls in inspect.getmembers(extension_mod):
       if inspect.isclass(cls) and [b.__name__ for b in cls.__bases__][0] == 'RockerExtension' and cls.check_args_for_activation(args_dict):
-        print("Extension Class: ", name, " Inherits: ", [b.__name__ for b in cls.__bases__])
+        # print("Extension Class: ", name, " Inherits: ", [b.__name__ for b in cls.__bases__])
         extensions_dict[name] = cls()
       #end if
     #end for
@@ -74,7 +74,7 @@ def get_extensions(extensions_modules: list, args_dict: dict):
   return sort_extensions(extensions_dict, cli_args=args_dict)
 #end def
 
-print("Extension searcher loaded")
+# print("Extension searcher loaded")
 
 def generate_dockerfile(extensions: list[rocker.core.RockerExtension], args_dict: dict):
   base_image = args_dict['base_image']
@@ -114,7 +114,7 @@ def generate_dockerfile(extensions: list[rocker.core.RockerExtension], args_dict
   return dockerfile_str
 #end def
 
-print("Dockerfile generator loaded")
+# print("Dockerfile generator loaded")
 
 def generate_parameters(extensions: list[rocker.core.RockerExtension], args_dict: dict):
   docker_args = ''
@@ -126,7 +126,7 @@ def generate_parameters(extensions: list[rocker.core.RockerExtension], args_dict
   return docker_args.split()
 #end def
 
-print("Parameter generator loaded")
+# print("Parameter generator loaded")
 
 def setup_environment(extensions_names: list[str], args_dict: dict) -> list[rocker.core.RockerExtension]:
   """
@@ -149,7 +149,7 @@ def setup_environment(extensions_names: list[str], args_dict: dict) -> list[rock
   return extensions
 #end def
 
-print("Env setup loaded")
+# print("Env setup loaded")
 
 def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerExtension]:
   """
@@ -159,30 +159,30 @@ def flatboat_ext_loader(extensions_names: list[str]) -> list[rocker.core.RockerE
   return []
 #end def
 
-print("Flatboat extension loader loaded")
+# print("Flatboat extension loader loaded")
 
 def get_rocker_config(additional_extensions: list[str], args: dict) -> tuple[str, str]: 
   try:
     # 1. Setup Rocker Environment and Extensions
-    print(" ==================================== EXTENSIONS ====================================")
+    # print(" ==================================== EXTENSIONS ====================================")
     extensions = setup_environment(additional_extensions, args)
 
     # 2. Generate Dockerfile
-    print(" ==================================== DOCKERFILE ===================================")
+    # print(" ==================================== DOCKERFILE ===================================")
     df = generate_dockerfile(extensions, args)
     # 3. Generate Parameters
-    print(" ======================================= ARGS ======================================")
+    # print(" ======================================= ARGS ======================================")
     args = generate_parameters(extensions, args)
 
     return (df, args)
   except Exception as error:
-    print("Python Error: ", error)
+    # print("Python Error: ", error)
 
     return ("", "")
 
 #end def
 
-print("Engine loaded")
+# print("Engine loaded")
 
 if __name__ == "__main__":
   ext_mods = []
@@ -207,4 +207,4 @@ if __name__ == "__main__":
   input(' ')
 #end if
 
-print("Rocker interface ready")
+# print("Rocker interface ready")
