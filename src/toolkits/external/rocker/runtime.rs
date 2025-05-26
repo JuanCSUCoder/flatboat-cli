@@ -4,6 +4,8 @@ use pyo3_ffi::c_str;
 use thiserror::Error;
 use pyo3::{types::{PyAnyMethods, PyModule}, PyErr, Python};
 
+use crate::toolkits::external::rocker;
+
 use super::ValidMap;
 
 const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py"));
@@ -18,7 +20,7 @@ pub enum RockerSetupError {
 }
 
 /// Setups and mantains the required environment for running a Rocker container
-pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(), PyErr> {
+pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidMap) -> Result<(String, String), PyErr> {
   debug!("Generating rocker config...");
   Python::with_gil(|py| {
     debug!("Started global interpreter lock!");
@@ -38,11 +40,11 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
 
     let args = (extension_modules, arguments);
 
-    function.call1(args)?;
+    let result = function.call1(args)?;
 
     debug!("Rocker Config Generated!");
 
-    Ok(())
+    return rocker::py_mapper::map2rs(result);
   })
 }
 
