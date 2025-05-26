@@ -36,7 +36,9 @@ impl ValidMap {
 }
 
 mod tests {
-    use super::*;
+    use super::{ValidMap};
+    use serde_json::Map;
+    use pyo3::{types::PyAnyMethods, IntoPyObject, PyErr, Python};
 
     #[test]
     fn test_valid_map() -> Result<(), PyErr> {
