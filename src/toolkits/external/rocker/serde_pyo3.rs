@@ -29,6 +29,12 @@ impl<'py> IntoPyObject<'py> for ValidMap {
     }
 }
 
+impl ValidMap {
+    pub fn from(map: Map<String, serde_json::Value>) -> Self {
+      Self(map)
+    }
+}
+
 mod tests {
     use super::{ValidMap};
     use serde_json::Map;
