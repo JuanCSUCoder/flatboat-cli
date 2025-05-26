@@ -1,4 +1,4 @@
-use pyo3::{exceptions::PyTypeError, types::{PyAnyMethods, PyDict, PyString}, Bound, IntoPyObject, PyAny, PyErr, Python};
+use pyo3::{exceptions::PyTypeError, types::{PyAnyMethods, PyBool, PyDict, PyString}, Bound, IntoPyObject, PyAny, PyErr, Python};
 use serde_json::Map;
 
 pub struct ValidMap (Map<String, serde_json::Value>);
@@ -15,9 +15,10 @@ impl<'py> IntoPyObject<'py> for ValidMap {
         let dict = PyDict::new(py);
 
         for (key, value) in map.iter() {
-            let key = PyString::new(py, key);
-            let value = match value {
-                serde_json::Value::String(s) => PyString::new(py, s),
+            let key: Bound<'py, PyString> = PyString::new(py, key);
+            let value: Bound<'py, PyAny> = match value {
+                serde_json::Value::String(s) => PyString::new(py, s).into_any(),
+                serde_json::Value::Bool(b) => PyBool::new(py, b.clone()).to_owned().into_any(),
                 _ => return Err(
                   PyErr::new::<PyTypeError, _>("Invalid configuration file.")
                 ),
