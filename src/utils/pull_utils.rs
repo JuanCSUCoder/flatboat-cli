@@ -30,7 +30,15 @@ pub enum PullError {
 
 impl Display for PullError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Pull error")
+        match self {
+            PullError::DownloadError(e) => write!(f, "Download error: {:?}", e),
+            PullError::ParseError(e) => write!(f, "Parse error: {:?}", e),
+            PullError::SerializerError(e) => write!(f, "Serializer error: {:?}", e),
+            PullError::WorkspaceAlreadyExistsError => write!(f, "Workspace already exists"),
+            PullError::DevcontainerError(e) => write!(f, "Devcontainer error: {}", e),
+            PullError::NotFoundError => write!(f, "Resource not found"),
+            PullError::UnknownError => write!(f, "An unknown error occurred"),   
+        }
     }
 }
 
