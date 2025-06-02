@@ -19,6 +19,9 @@ pub enum RockerConfigError {
 
     #[error("Failed to configure devcontainer: {0}")]
     DevcontainerJSONError(#[from] DevcontainerConfigError),
+
+    #[error("Failed to write the Dockerfile: {0}")]
+    DockerfileError(#[from] DockerfileError),
 }
 
 pub async fn configure_rocker() -> Result<(), RockerConfigError> {
@@ -87,7 +90,18 @@ fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), Devco
   return Ok(());
 }
 
+
+#[derive(Debug, thiserror::Error)]
+pub enum DockerfileError {
+  #[error("Failed to write the Dockerfile: {0}")]
+  DockerfileWriteError(#[from] std::io::Error),
+}
+
 /// Writes the Dockerfile based on the generated Rocker configuration
-fn write_dockerfile(rocker_config: &(String, Vec<String>)) -> Result<(), RockerConfigError> {
+fn write_dockerfile(rocker_config: &(String, Vec<String>)) -> Result<(), DockerfileError> {
+  std::fs::write(
+    ".devcontainer/Dockerfile",
+    rocker_config.0.clone()
+  )?;
   return Ok(());
 }
