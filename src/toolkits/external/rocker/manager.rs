@@ -1,6 +1,10 @@
+use std::collections::HashMap;
+
 use serde_json::Map;
 
 use crate::toolkits::external::rocker::{runtime, serde_pyo3};
+
+use super::model::DevcontainerConfig;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RockerConfigError {
@@ -12,6 +16,9 @@ pub enum RockerConfigError {
     FlagsParseError(#[from] serde_json::Error),
     #[error("Invalid rocker configuration format: {0}")]
     InvalidFlagsFormat(String),
+
+    #[error("Failed to configure devcontainer: {0}")]
+    DevcontainerJSONError(#[from] DevcontainerConfigError),
 }
 
 pub async fn configure_rocker() -> Result<(), RockerConfigError> {
@@ -48,8 +55,35 @@ async fn populate_rocker_configuration(flags: Map<String, serde_json::Value>) ->
   return Ok(());
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum DevcontainerConfigError {
+    #[error("Failed to read the devcontainer.json file: {0}")]
+    DevcontainerIOError(#[from] std::io::Error),
+    #[error("Failed to parse the devcontainer.json file: {0}")]
+    DevcontainerParseError(#[from] serde_json::Error),
+}
+
 /// Writes the generated Rocker configuration to the devcontainer.json file
-fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), RockerConfigError> {
+fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), DevcontainerConfigError> {
+  // 1. Read the existing devcontainer.json file
+  let devcontainer_str = std::fs::read_to_string(".devcontainer/devcontainer.json")?;
+
+  let mut devcontainer_config: DevcontainerConfig = serde_json::from_str(&devcontainer_str)?;
+
+  // 2. Configure arguments
+  devcontainer_config.privileged = true;
+  devcontainer_config.container_env = HashMap::new();
+  devcontainer_config.run_args = rocker_config.1.clone();
+  devcontainer_config.mounts = vec![];
+
+  // 3. Configure Dockerfile
+  devcontainer_config.build.dockerfile = "Dockerfile".to_string();
+  devcontainer_config.build.context = ".".to_string();
+
+  // 4. Write the updated configuration back to the file
+  let updated_devcontainer_str = serde_json::to_string_pretty(&devcontainer_config)?;
+  std::fs::write(".devcontainer/devcontainer.json", updated_devcontainer_str)?;
+
   return Ok(());
 }
 
