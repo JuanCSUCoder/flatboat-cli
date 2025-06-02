@@ -35,8 +35,9 @@ impl ValidMap {
     }
 }
 
+#[cfg(test)]
 mod tests {
-    use super::{ValidMap};
+    use super::ValidMap;
     use serde_json::Map;
     use pyo3::{types::PyAnyMethods, IntoPyObject, PyErr, Python};
 

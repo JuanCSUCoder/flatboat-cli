@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use subprocess::{Exec, ExitStatus, PopenError};
 
-use crate::{toolkits::{external::rocker_tk}, utils::exec::wrapped_exec};
+use crate::{toolkits::rocker::{self, RockerConfigError}, utils::exec::wrapped_exec};
 
 /// Checks if a valid devcontainer is already running, and starts it if its not
 pub fn run_devcontainer() -> Result<ExitStatus, PopenError> {
@@ -31,7 +31,7 @@ pub enum DevcontainerInitializationError {
     #[error("Failed to apply devcontainer template: {0}")]
     TemplateApplyError(#[from] PopenError),
     #[error("Failed to configure Rocker: {0}")]
-    RockerError(#[from] rocker_tk::RockerConfigError),
+    RockerError(#[from] RockerConfigError),
 }
 
 /// Downloads the files from the Workspace Template
@@ -46,7 +46,7 @@ pub async fn create_ws_files(image_url: &String) -> Result<ExitStatus, Devcontai
     let devcont_status = wrapped_exec(exec, Some(Duration::from_secs(10)), "Devcontainer CLI")?;
 
     if devcont_status.success() {
-        rocker_tk::configure_rocker().await?;
+        rocker::configure_rocker().await?;
 
         return Ok(ExitStatus::Exited(0));
     } else {

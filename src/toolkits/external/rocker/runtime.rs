@@ -45,6 +45,7 @@ pub async fn get_rocker_config(extension_modules: Vec<String>, arguments: ValidM
   })
 }
 
+#[cfg(test)]
 mod tests {
   use super::*;
   use crate::toolkits::external::rocker::serde_pyo3::ValidMap;
