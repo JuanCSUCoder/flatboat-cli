@@ -12,7 +12,7 @@ pub enum RockerConfigError {
     PythonInterfaceError(#[from] pyo3::PyErr),
     #[error("Failed to read the rocker config file: {0}")]
     FlagsReadError(#[from] std::io::Error),
-    #[error("Failed to parse the rocker config file: {0}")]
+    #[error("\n\nNON-COMPATIBLE TEMPLATE: Since Flatboat v0.5.0 you need to use agnostic rocker compatible templates. \n\nFailed to parse the rocker config file: {0}")]
     FlagsParseError(#[from] serde_json::Error),
     #[error("Invalid rocker configuration format: {0}")]
     InvalidFlagsFormat(String),
