@@ -3,6 +3,8 @@ use std::{error::Error, fmt::Display};
 use serde::Serialize;
 use serde_derive::Serialize;
 
+use crate::toolkits::devcontainer::DevcontainerInitializationError;
+
 #[derive(Debug)]
 pub struct SerializableError(pub Box<dyn std::fmt::Debug>);
 
@@ -21,7 +23,7 @@ pub enum PullError {
     ParseError(SerializableError),
     SerializerError(SerializableError),
     WorkspaceAlreadyExistsError,
-    RockerError(RockerConfigError),
+    DevcontainerError(DevcontainerInitializationError),
     NotFoundError,
     UnknownError,
 }
@@ -74,8 +76,17 @@ impl From<subprocess::PopenError> for PullError {
     }
 }
 
-impl From<RockerConfigError> for PullError {
-    fn from(value: RockerConfigError) -> Self {
-        PullError::UnknownError
+impl From<DevcontainerInitializationError> for PullError {
+    fn from(value: DevcontainerInitializationError) -> Self {
+        PullError::DevcontainerError(value)
+    }
+}
+
+impl Serialize for DevcontainerInitializationError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(format!("{:?}", self).as_str())
     }
 }

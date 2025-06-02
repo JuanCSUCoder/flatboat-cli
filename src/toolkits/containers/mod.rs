@@ -12,6 +12,7 @@ mod public {
       run_devcontainer,
       exec_in_shell,
       create_ws_files,
+      DevcontainerInitializationError,
     };
   }
 

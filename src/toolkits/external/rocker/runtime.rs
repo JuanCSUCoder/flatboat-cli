@@ -6,7 +6,7 @@ use pyo3::{types::{PyAnyMethods, PyModule}, PyErr, Python};
 
 use crate::toolkits::external::rocker;
 
-use super::ValidMap;
+use super::serde_pyo3::ValidMap;
 
 const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py"));
 
@@ -14,9 +14,6 @@ const ROCKER_INTERFACE_SRC: &CStr = c_str!(include_str!("./rocker_interface.py")
 pub enum RockerSetupError {
   #[error("Failed loading Flatboat-Rocker Interface. PLEASE REPORT THIS BUG IN GITHUB.")]
   ErrorLoadingInterface(#[from] PyErr),
-
-  #[error("Test error. PLEASE REPORT THIS BUG IN GITHUB.")]
-  TestError,
 }
 
 /// Setups and mantains the required environment for running a Rocker container

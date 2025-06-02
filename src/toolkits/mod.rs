@@ -21,6 +21,7 @@ mod public {
       run_devcontainer,
       exec_in_shell,
       create_ws_files,
+      DevcontainerInitializationError,
     };
   }
 
@@ -49,8 +50,8 @@ mod public {
     use super::*;
 
     pub use rocker_tk::{
-      get_rocker_config,
-      ValidMap,
+      configure_rocker,
+      RockerConfigError,
     };
   }
 }

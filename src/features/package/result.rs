@@ -22,9 +22,6 @@ pub enum PackageError {
     #[error("Unable to create the package")]
     PackageCreationError,
 
-    #[error("Feature not implemented!")]
-    NotImplemented,
-
     #[error("Provision error: {0}")]
     ProvisionError(#[from] ProvisionError),
 

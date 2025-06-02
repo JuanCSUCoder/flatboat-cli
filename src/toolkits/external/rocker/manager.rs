@@ -6,8 +6,6 @@ use crate::toolkits::external::rocker::{runtime, serde_pyo3};
 pub enum RockerConfigError {
     #[error("Failed to load the python Rocker interface. Please report this bug on GitHub.: {0}")]
     PythonInterfaceError(#[from] pyo3::PyErr),
-    #[error("An error occurred while generating the Rocker configuration: {0}")]
-    ConfigGenerationError(String),
     #[error("Failed to read the rocker config file: {0}")]
     FlagsReadError(#[from] std::io::Error),
     #[error("Failed to parse the rocker config file: {0}")]
