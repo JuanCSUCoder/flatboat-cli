@@ -49,10 +49,10 @@ async fn main() {
     if let Ok(output) = res {
         if ! matches!(output.kind, ProgramOutputKind::NoOutput) {
             info!("Finished successfully!");
-            core::helpers::output_serialized(&output);
+            // core::helpers::output_serialized(&output);
         }
     } else if let Err(err) = res {
         error!("Error: {}", err.kind);
-        core::helpers::output_serialized(&err);
+        // core::helpers::output_serialized(&err);
     }
 }
