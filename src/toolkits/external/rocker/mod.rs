@@ -1,6 +1,6 @@
 mod runtime;
 mod serde_pyo3;
 mod py_mapper;
+mod manager;
 
-pub use runtime::get_rocker_config;
-pub use serde_pyo3::ValidMap;
+pub use manager::{configure_rocker, RockerConfigError};

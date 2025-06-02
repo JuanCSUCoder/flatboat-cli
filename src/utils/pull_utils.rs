@@ -21,6 +21,7 @@ pub enum PullError {
     ParseError(SerializableError),
     SerializerError(SerializableError),
     WorkspaceAlreadyExistsError,
+    RockerError(RockerConfigError),
     NotFoundError,
     UnknownError,
 }
@@ -69,6 +70,12 @@ impl From<std::io::Error> for PullError {
 
 impl From<subprocess::PopenError> for PullError {
     fn from(_value: subprocess::PopenError) -> Self {
+        PullError::UnknownError
+    }
+}
+
+impl From<RockerConfigError> for PullError {
+    fn from(value: RockerConfigError) -> Self {
         PullError::UnknownError
     }
 }
