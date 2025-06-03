@@ -26,12 +26,12 @@ pub enum RockerConfigError {
 
 pub async fn configure_rocker() -> Result<(), RockerConfigError> {
     // 1. Get Rocker flags from .rocker/config.json
-    let devcont_configuration_file = std::fs::read_to_string(".devcontainer/devcontainer.json")?;
+    let rocker_configuration_file = std::fs::read_to_string(".rocker/config.json")?;
 
-    let dcconfig_val = serde_json::from_str::<serde_json::Value>(&devcont_configuration_file)?;
-    let dconfig_map = dcconfig_val.as_object()
+    let rocker_val = serde_json::from_str::<serde_json::Value>(&rocker_configuration_file)?;
+    let rocker_map = rocker_val.as_object()
         .ok_or_else(|| RockerConfigError::InvalidFlagsFormat("Invalid devcontainer configuration format".to_string()))?;
-    let flags: Map<String, serde_json::Value> = dconfig_map.clone();
+    let flags: Map<String, serde_json::Value> = rocker_map.clone();
 
     // 2. Load the Rocker interface, generate the configuration and write it to the files
     populate_rocker_configuration(flags).await?;
