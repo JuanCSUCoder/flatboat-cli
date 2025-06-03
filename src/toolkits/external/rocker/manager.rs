@@ -8,7 +8,7 @@ use super::model::DevcontainerConfig;
 
 #[derive(Debug, thiserror::Error)]
 pub enum RockerConfigError {
-    #[error("Failed to load the python Rocker interface. Please report this bug on GitHub.: {0}")]
+    #[error("\n\nPossible Solutions: \n \t- Please check if you have rocker and it's dependencies properly installed with pip directly on your system. Flatboat doesn't detect Anaconda nor VirtualEnv installations. \n \t- You may also have a conda or venv environment activated, please deactivate it and try again. \n\nFailed to load the python Rocker interface.: {0}")]
     PythonInterfaceError(#[from] pyo3::PyErr),
     #[error("\n\nNON-COMPATIBLE TEMPLATE: Since Flatboat v0.5.0 you need to use agnostic rocker compatible templates. \n\nFailed to read the rocker config file: {0}")]
     FlagsReadError(#[from] std::io::Error),
