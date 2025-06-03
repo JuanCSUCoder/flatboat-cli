@@ -32,6 +32,8 @@ pub enum DevcontainerInitializationError {
     TemplateApplyError(#[from] PopenError),
     #[error("Failed to configure Rocker: {0}")]
     RockerError(#[from] RockerConfigError),
+    #[error("Failed to pull devcontainer template: {0}")]
+    TemplatePullError(String),
 }
 
 /// Downloads the files from the Workspace Template
@@ -50,7 +52,13 @@ pub async fn create_ws_files(image_url: &String) -> Result<ExitStatus, Devcontai
 
         return Ok(ExitStatus::Exited(0));
     } else {
-        error!("Failed to apply devcontainer template from {}: {:?}", image_url, devcont_status);
-        return Ok(devcont_status);
+        return 
+            Err(
+                DevcontainerInitializationError::TemplatePullError(
+                    format!(
+                        "Failed to apply devcontainer template from {}: {:?}", image_url, devcont_status
+                    )
+                )
+            );
     }
 }
