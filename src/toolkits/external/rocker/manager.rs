@@ -78,10 +78,16 @@ fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), Devco
   devcontainer_config.container_env = HashMap::new();
   devcontainer_config.run_args = rocker_config.1.clone();
   devcontainer_config.mounts = vec![];
+  devcontainer_config.remote_user = "flatboat".to_string();
 
   // 3. Configure Dockerfile
   devcontainer_config.build.dockerfile = "Dockerfile".to_string();
   devcontainer_config.build.context = ".".to_string();
+  devcontainer_config.build.args = {
+    let mut args = HashMap::new();
+    args.insert("USERNAME".to_string(), "flatboat".to_string());
+    args
+  };
 
   // 4. Write the updated configuration back to the file
   let updated_devcontainer_str = serde_json::to_string_pretty(&devcontainer_config)?;

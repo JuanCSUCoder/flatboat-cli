@@ -19,6 +19,9 @@ pub struct DevcontainerConfig {
   pub run_args: Vec<String>,
   pub mounts: Vec<String>,
 
+  #[serde(default = "default_remote_user")]
+  pub remote_user: String,
+
   #[serde(default)] // This ensures the HashMap defaults to empty if no extra fields
   #[serde(flatten)] // This tells Serde to "flatten" all other fields into this map
   pub extra_fields: HashMap<String, serde_json::Value>,
@@ -61,4 +64,8 @@ fn default_dockerfile() -> String {
 
 fn default_context() -> String {
   ".".to_string()
+}
+
+fn default_remote_user() -> String {
+  "flatboat".to_string()
 }
