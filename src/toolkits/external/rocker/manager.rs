@@ -82,6 +82,8 @@ fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), Devco
   devcontainer_config.run_args = rocker_config.1.clone();
   devcontainer_config.mounts = vec![];
   devcontainer_config.remote_user = username.clone();
+  devcontainer_config.workspace_folder = Some(format!("/home/{}/ws", username));
+  devcontainer_config.workspace_mount = Some(format!("source=${{localWorkspaceFolder}},target=/home/{}/ws,type=bind", username));
 
   // 3. Configure Dockerfile
   devcontainer_config.build.dockerfile = "Dockerfile".to_string();
