@@ -64,6 +64,8 @@ pub enum DevcontainerConfigError {
     DevcontainerIOError(#[from] std::io::Error),
     #[error("Failed to parse the devcontainer.json file: {0}")]
     DevcontainerParseError(#[from] serde_json::Error),
+    #[error("Failed to detect current user. Please ensure $USER variable is set: {0}")]
+    UserDetectionError(#[from] std::env::VarError),
 }
 
 /// Writes the generated Rocker configuration to the devcontainer.json file
@@ -72,20 +74,21 @@ fn write_devcontainer(rocker_config: &(String, Vec<String>)) -> Result<(), Devco
   let devcontainer_str = std::fs::read_to_string(".devcontainer/devcontainer.json")?;
 
   let mut devcontainer_config: DevcontainerConfig = serde_json::from_str(&devcontainer_str)?;
+  let username = std::env::var("USER")?;
 
   // 2. Configure arguments
   devcontainer_config.privileged = true;
   devcontainer_config.container_env = HashMap::new();
   devcontainer_config.run_args = rocker_config.1.clone();
   devcontainer_config.mounts = vec![];
-  devcontainer_config.remote_user = "flatboat".to_string();
+  devcontainer_config.remote_user = username.clone();
 
   // 3. Configure Dockerfile
   devcontainer_config.build.dockerfile = "Dockerfile".to_string();
   devcontainer_config.build.context = ".".to_string();
   devcontainer_config.build.args = {
     let mut args = HashMap::new();
-    args.insert("USERNAME".to_string(), "flatboat".to_string());
+    args.insert("USERNAME".to_string(), username);
     args
   };
 
