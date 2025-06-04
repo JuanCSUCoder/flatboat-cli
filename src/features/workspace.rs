@@ -1,11 +1,12 @@
 use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}};
 
-use crate::{args, output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult}, toolkits::devcontainer::create_ws_files, utils::{self, pull::{PullError, Pullable}}};
+use crate::{args, output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult}, toolkits::{devcontainer::create_ws_files, rocker}, utils::{self, manifest::Manifest, pull::{PullError, Pullable}}};
 
 /// Handles all workspace related commands
 pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
     let res = match ws_cmd {
-        args::WorkspaceSubcommands::Create { ws_name, ws_manifest } => load_from_manifest(ws_name, ws_manifest).await
+        args::WorkspaceSubcommands::Create { ws_name, ws_manifest } => load_from_manifest(ws_name, ws_manifest).await,
+        args::WorkspaceSubcommands::Reconfigure => reconfigure_ws().await,
     };
 
     if let Ok(manifest) = res {
@@ -39,6 +40,26 @@ async fn load_from_manifest(ws_name: String, ws_manifest: Option<String>) -> Res
     manifest_file.write_all(toml::to_string_pretty(&manifest)?.as_bytes())?;
 
     Ok(manifest)
+}
+
+async fn reconfigure_ws() -> Result<Manifest, PullError> {
+    info!("Reconfiguring Workspace ...");
+
+    // Load the manifest
+    let manifest: utils::manifest::Manifest = Manifest::new().map_err(|_| PullError::NotFoundError)?;
+
+    // Pull and install devcontainer
+    // Change to the workspace directory, return error if ws_path is None
+    if let Some(ws_path) = &manifest.ws_path {
+        std::env::set_current_dir(ws_path)
+            .map_err(|_| PullError::NotFoundError)?;
+
+        rocker::configure_rocker().await?;
+
+        return Ok(manifest);
+    } else {
+        return Err(PullError::NotFoundError);
+    }
 }
 
 /// Creates Workspace Directory
