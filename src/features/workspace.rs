@@ -1,6 +1,6 @@
 use std::{env, fs::{self, File}, io::Write, path::{Path, PathBuf}};
 
-use crate::{args, output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult}, toolkits::{devcontainer::create_ws_files, rocker}, utils::{self, manifest::Manifest, pull::{PullError, Pullable}}};
+use crate::{args, output::{ProgramError, ProgramErrorKind, ProgramOutput, ProgramOutputKind, ProgramResult}, toolkits::{devcontainer::{create_ws_files, DevcontainerInitializationError}, rocker}, utils::{self, manifest::Manifest, pull::{PullError, Pullable}}};
 
 /// Handles all workspace related commands
 pub async fn handle_ws_cmd(ws_cmd: args::WorkspaceSubcommands) -> ProgramResult {
@@ -54,7 +54,7 @@ async fn reconfigure_ws() -> Result<Manifest, PullError> {
         std::env::set_current_dir(ws_path)
             .map_err(|_| PullError::NotFoundError)?;
 
-        rocker::configure_rocker().await?;
+        rocker::configure_rocker().await.map_err(|e| DevcontainerInitializationError::RockerError(e))?;
 
         return Ok(manifest);
     } else {
