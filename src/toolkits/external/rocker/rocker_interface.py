@@ -2,6 +2,7 @@ import inspect
 import typing
 import rocker
 import os
+import pwd
 
 # Default Extensions Imports
 import rocker.core
@@ -102,7 +103,7 @@ def generate_dockerfile(extensions: list[rocker.core.RockerExtension], args_dict
     if 'user_override_name' in args_dict and args_dict['user_override_name']:
       username = args_dict['user_override_name']
     else:
-      username = "flatboat"
+      username = pwd.getpwuid(os.getuid()).pw_name
     #end if
     dockerfile_str += f'USER {username}\n'
   #end if
