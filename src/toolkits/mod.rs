@@ -1,25 +1,40 @@
-mod devcontainer_tk;
-mod oras_tk;
-mod docker_tk;
-mod jinja_tk;
+mod containers;
+mod external;
 
 mod public {
-  use super::*;
+  use super::{
+    containers::{
+      devcontainer_tk,
+      docker_tk,
+      oras_tk,
+    },
+    external::{
+      jinja_tk,
+      rocker_tk,
+    }
+  };
 
   pub mod devcontainer {
-    pub use crate::toolkits::devcontainer_tk::{
+    use super::*;
+
+    pub use devcontainer_tk::{
       run_devcontainer,
       exec_in_shell,
       create_ws_files,
+      DevcontainerInitializationError,
     };
   }
 
   pub mod oras {
-    pub use crate::toolkits::oras_tk::pull_template;
+    use super::*;
+
+    pub use oras_tk::pull_template;
   }
 
   pub mod docker {
-    pub use crate::toolkits::docker_tk::build_image;
+    use super::*;
+
+    pub use docker_tk::build_image;
   }
 
   pub mod jinja {
@@ -30,6 +45,15 @@ mod public {
       TemplatingError,
     };
   }
+
+  pub mod rocker {
+    use super::*;
+
+    pub use rocker_tk::{
+      configure_rocker,
+      RockerConfigError,
+    };
+  }
 }
 
 pub use public::{
@@ -37,4 +61,5 @@ pub use public::{
   oras,
   docker,
   jinja,
+  rocker,
 };

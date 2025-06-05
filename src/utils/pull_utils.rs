@@ -3,6 +3,8 @@ use std::{error::Error, fmt::Display};
 use serde::Serialize;
 use serde_derive::Serialize;
 
+use crate::toolkits::devcontainer::DevcontainerInitializationError;
+
 #[derive(Debug)]
 pub struct SerializableError(pub Box<dyn std::fmt::Debug>);
 
@@ -21,13 +23,22 @@ pub enum PullError {
     ParseError(SerializableError),
     SerializerError(SerializableError),
     WorkspaceAlreadyExistsError,
+    DevcontainerError(DevcontainerInitializationError),
     NotFoundError,
     UnknownError,
 }
 
 impl Display for PullError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Pull error")
+        match self {
+            PullError::DownloadError(e) => write!(f, "Download error: {:?}", e),
+            PullError::ParseError(e) => write!(f, "Parse error: {:?}", e),
+            PullError::SerializerError(e) => write!(f, "Serializer error: {:?}", e),
+            PullError::WorkspaceAlreadyExistsError => write!(f, "Workspace already exists"),
+            PullError::DevcontainerError(e) => write!(f, "Devcontainer error: {}", e),
+            PullError::NotFoundError => write!(f, "Resource not found"),
+            PullError::UnknownError => write!(f, "An unknown error occurred"),   
+        }
     }
 }
 
@@ -70,5 +81,20 @@ impl From<std::io::Error> for PullError {
 impl From<subprocess::PopenError> for PullError {
     fn from(_value: subprocess::PopenError) -> Self {
         PullError::UnknownError
+    }
+}
+
+impl From<DevcontainerInitializationError> for PullError {
+    fn from(value: DevcontainerInitializationError) -> Self {
+        PullError::DevcontainerError(value)
+    }
+}
+
+impl Serialize for DevcontainerInitializationError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(format!("{:?}", self).as_str())
     }
 }

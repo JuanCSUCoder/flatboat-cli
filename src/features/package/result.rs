@@ -13,7 +13,7 @@ pub type PackageResult = Result<PackageOutput, PackageError>;
 /// Package subcommand error type
 #[derive(Debug, Error)]
 pub enum PackageError {
-    #[error("Unable to create a devcontainer")]
+    #[error("Unable to create a devcontainer\n\nTry to reconfigure with: \n\t$ flatboat workspace reconfigure\n\n")]
     DevcontainerError,
 
     #[error("Unable to create the package: {0}")]
@@ -21,9 +21,6 @@ pub enum PackageError {
 
     #[error("Unable to create the package")]
     PackageCreationError,
-
-    #[error("Feature not implemented!")]
-    NotImplemented,
 
     #[error("Provision error: {0}")]
     ProvisionError(#[from] ProvisionError),

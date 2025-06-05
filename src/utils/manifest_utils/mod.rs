@@ -113,19 +113,19 @@ mod tests {
         assert_eq!(man.name, "humble_nogpu".to_owned());
         assert_eq!(
             man.artifacts.workspace,
-            "ghcr.io/JuanCSUCoder/flatboat-templates/roboten_ws_humble_nogpu".to_owned()
+            "ghcr.io/JuanCSUCoder/flatboat-templates/robot_ws_humble_nogpu".to_owned()
         );
         assert_eq!(
             man.artifacts.package,
-            "JuanCSUCoder/flatboat-templates/pkg/humble/humble_nogpu".to_owned()
+            "ghcr.io/juancsucoder/flatboat-templates/robot_pkg_humble_nogpu:1.2.1".to_owned()
         );
         assert_eq!(
             man.artifacts.workload,
-            "JuanCSUCoder/flatboat-templates/wl/humble/humble_nogpu".to_owned()
+            "ghcr.io/juancsucoder/flatboat-templates/robot_wl_humble:1.2.1".to_owned()
         );
         assert_eq!(
             man.artifacts.bot,
-            "JuanCSUCoder/flatboat-templates/bot/humble/humble_nogpu".to_owned()
+            "https://juancsucoder.github.io/flatboat-docs#NotImplemented".to_owned()
         );
 
         return Ok(());
