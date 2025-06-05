@@ -1,6 +1,6 @@
 [package]
 name = "flatboat"
-version = "0.4.0"
+version = "0.5.1"
 edition = "2021"
 description = "Flatboat is a CLI tool that integrates Docker and Kubernetes tooling into the ROS workspace workflow."
 authors = ["Juan Camilo Sánchez Urrego @JuanCSUCoder <juancsucoder@gmail.com>"]
@@ -27,3 +27,9 @@ serde_json = "1.0.117"
 minijinja = "2.0.3"
 thiserror = "1.0.64"
 anyhow = "1.0.93"
+pyo3-ffi = "0.23.3"
+
+[dependencies.pyo3]
+version = "0.23.1"
+features = ["auto-initialize"]
+

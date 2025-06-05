@@ -24,7 +24,7 @@ pub struct ProgramOutput {
 
 #[derive(Debug, Error)]
 pub enum ProgramErrorKind {
-    #[error("Unable to create workspace")]
+    #[error("Unable to create workspace: {0}")]
     WSCreate(PullError),
 
     #[error("Unable to process package command: {0}")]
